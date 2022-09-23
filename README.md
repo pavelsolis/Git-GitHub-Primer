@@ -9,7 +9,7 @@ A **branch** is a specific sequence of commits. An **upstream** is simply anothe
 The following mostly explains how to work with Git and GitHub from scratch using the terminal (also known as shell):
 - The lines starting with the '$' symbol mean commands typed in the terminal, while the lines starting with the '>' symbol mean output shown in the terminal.
 - The most commonly used commands in the terminal when working with Git allow you to list files and navigate through folders: `ls`, `cd`.
-- The most commonly used Git commands are: `status`, `add`, `commit`, `push`, `pull`. Other less used commands include: `diff`, `reset`, `branch`, `checkout`, `merge`.
+- The most commonly used Git commands are: `status`, `add`, `commit`, `push`, `pull`. Other less used commands include: `diff`, `reset`, `branch`, `checkout`, `merge`. All these commands are explained below.
 
 [Here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) you can see an overview of the terminal, shell, and bash; and [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/), the main bash commands to manage directories and files.
 
