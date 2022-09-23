@@ -1,10 +1,8 @@
 # Git and GitHub Primer
 
-**Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work on a project (i.e. folder with files), keep track of the changes and have a backup online.
+**Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work on a project, keep track of the changes and have a backup online.
 
-A **repository** is a project. To **commit** is to register the changes made in a file or files. You first put files in the **staging area** to keep track of them (further explained below) and then commit the changes.
-
-A Git repository is a history of commits and how they relate.
+A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A Git repository is a history of commits and how they relate.
 - Git tracks changes line by line.
 - Git stores data as a series of snapshots.
 
@@ -134,9 +132,9 @@ $ git clone <URL>
 
 This initializes a folder as a Git repository in your machine. To pull down from GitHub.com the most recent version of the project to your machine, use:
 ```bash
-$ git pull
-# OR
 $ git pull <remote> <branch>
+# OR
+$ git pull
 ```
 
 You can update the *.gitignore* file, the README file, move an existing project into the local repository and commit the changes.
@@ -164,7 +162,7 @@ $ git status
 
 - When your local version is not ahead to that in GitHub, the terminal will display `Your branch is up to date with 'origin/<parent>', nothing to commit, working tree clean`. However, note that this does not tell you whether the remote version is ahead of your local version. That is why it is recommended to always pull before pushing.
 
-To include new (i.e. untracked) or update modified (i.e. not staged) files to the **staging area** (from which changes will be recorded later), use:
+Before committing a change, you first need to put the file(s) in the **staging area** to keep track of them. To include new (i.e. untracked) or update modified (i.e. not staged) files to the **staging area** (from which changes will be recorded), use:
 ```bash
 $ git add <filename1.ext> <filename2.ext>
 ```
