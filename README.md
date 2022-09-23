@@ -2,7 +2,7 @@
 
 **Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work on a project, keep track of the changes and have a backup online.
 
-Let's start with a few basic concepts. A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A Git repository is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
+Let's start with a few basic concepts. A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
 
 A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually a *remote*- or online-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
