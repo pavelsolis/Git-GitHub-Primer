@@ -1,5 +1,5 @@
 # Git and GitHub Primer
--------------------------------------------------------------------------------------
+
 **Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work in your (local) machine(s) and backup your changes online (remote).
 
 A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. You first put files in the **staging area** to keep track of them (further explained below) and then commit the changes.
