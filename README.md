@@ -1,14 +1,14 @@
 # Git and GitHub Primer
 
-**Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work in your (local) machine(s) and backup your changes online (remote).
+**Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work on a project (i.e. folder with files), keep track of the changes and have a backup online.
 
-A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. You first put files in the **staging area** to keep track of them (further explained below) and then commit the changes.
+A **repository** is a project. To **commit** is to register the changes made in a file or files. You first put files in the **staging area** to keep track of them (further explained below) and then commit the changes.
 
 A Git repository is a history of commits and how they relate.
 - Git tracks changes line by line.
 - Git stores data as a series of snapshots.
 
-A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually a *remote-tracking* branch, associated with a (regular) *local* branch. To **pull** is to download the changes in the remote repository to your local machine. To **push** is to upload the changes in your local machine to the remote repository.
+A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually a *remote-tracking* branch (online), associated with a regular branch (in your *local* machine). To **pull** is to download the changes in the remote repository to your local machine. To **push** is to upload the changes in your local machine to the remote repository.
 
 The following mostly explains how to work with Git and GitHub using the terminal (also known as shell):
 - The lines starting with the '$' symbol mean commands typed in the terminal, while the lines starting with the '>' symbol mean output shown in the terminal.
