@@ -11,7 +11,7 @@ The following mostly explains how to work with Git and GitHub from scratch using
 - The most commonly used commands in the terminal when working with Git allow you to list files and navigate through folders: `ls`, `cd`.
 - The most commonly used Git commands are: `status`, `add`, `commit`, `push`, `pull`. Other less used commands include: `diff`, `reset`, `branch`, `checkout`, `merge`. All these commands are explained below.
 
-[Here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) you can see an overview of the terminal, shell, and bash; and [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/), the main bash commands to manage directories and files.
+[Here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) you can see an overview of the terminal, shell, and bash; and [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/), the main bash commands to manage directories and files. Finally, these other great introductory pieces to Git and GitHub: [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/).
 
 
 ## [Setting Up Git](https://help.github.com/en/articles/set-up-git)
