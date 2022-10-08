@@ -108,6 +108,12 @@ To update your GitHub access credentials see this [link](https://docs.github.com
 $ git remote set-url origin git@github.com:USERNAME/REPOSITORY-NAME.git
 ```
 
+To check whether Git is using HTTP or ssh, the following command shows the URL that the repository will fetch from and push to, which also indicates the protocol:
+```bash
+$ git remote show origin
+```
+
+
 ## Create (Remote and Local) Repositories
 You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
 
