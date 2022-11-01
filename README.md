@@ -1,17 +1,18 @@
 # Git and GitHub Primer
 
-**Git** is a version control software. **GitHub** is a hosting service to track changes. By using them, you can work on a project, keep track of the changes and have a backup online.
+**Git** is a version control software. **GitHub** is a hosting service to track changes. With them, while you work on a project, you can keep track of the changes and have a backup online.
 
-Let's start with a few basic concepts. A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
+Let's start with a few basic concepts:
+- A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
+- A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
-A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually a *remote*- or online-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
-
-The following mostly explains how to work with Git and GitHub from scratch using the terminal (also known as shell):
+The following explains how to work with Git and GitHub from scratch using the terminal (also known as shell). This is what is needed:
 - The lines starting with the '$' symbol mean commands typed in the terminal, while the lines starting with the '>' symbol mean output shown in the terminal.
 - The most commonly used commands in the terminal when working with Git allow you to list files and navigate through folders: `ls`, `cd`.
-- The most commonly used Git commands are: `status`, `add`, `commit`, `push`, `pull`. Other less used commands include: `diff`, `reset`, `branch`, `checkout`, `merge`. All these commands are explained below.
+- The most commonly used Git commands are: `status`, `add`, `commit`, `push`, `pull`. Other useful commands include: `diff`, `reset`, `branch`, `checkout`, `merge`. All these commands are explained below.
 
-[Here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) you can see an overview of the terminal, shell, and bash; and [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/), the main bash commands to manage directories and files. Finally, these other great introductory pieces to Git and GitHub: [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/).
+See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; and [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files. These are other great introductory pieces to Git and GitHub: [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/).
+
 
 
 ## [Setting Up Git](https://help.github.com/en/articles/set-up-git)
