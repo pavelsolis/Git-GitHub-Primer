@@ -51,14 +51,15 @@ $ git config --global rebase.autoStash true
 
 To check the configuration settings, type `git config --list`. For more on setting up Git see [here](https://help.github.com/en/articles/set-up-git).
 
-To access a GitHub repository from Git, you need to [authenticate](https://help.github.com/en/articles/which-remote-url-should-i-use#cloning-with-https-urls-recommended) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
+
+### Accesing Remote Repositories
+To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
 
-### HTTPS
-If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. You need Git 1.7.10 or newer to use the osxkeychain credential helper
-Note: You may not need to configure the credential helper as explained below because since 2019 Git may use a credential helper provided by your operating system.
+#### HTTPS
+If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. You need Git 1.7.10 or newer to use the osxkeychain credential helper.
 
 - Find out if the credential helper is already installed. In the terminal, type:
 ```bash
@@ -75,10 +76,9 @@ Otherwise, follow step 2 on the [GitHub help page](https://docs.github.com/en/gi
 $ git config --global credential.helper osxkeychain
 ```
 
-- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you to authenticate (only once) with your user and a personal access token or PAT. [Since 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/), authetication in GitHub uses a [PAT](https://github.com/settings/tokens) because is more secure than a password. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. Once you have a token, enter it instead of your password to perform Git operations over HTTPS.
-Note: When prompted for a username and password, you must provide your GitHub username and your PAT. Notice that the command line prompt won't specify that you should enter your PAT when it asks for your password.
+- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you to authenticate (only once). [Since 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/), authetication in GitHub uses a personal access token or [PAT](https://github.com/settings/tokens) instead of a password. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. Once you have a token, enter it instead of your password to perform Git operations over HTTPS.
 
-When you change your username, password, or personal access token on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
+You can [update your GitHub access credentials](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials). When you change your username, password, or personal access token on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
 ```bash
 $ git credential-osxkeychain erase
 host=github.com
@@ -91,32 +91,31 @@ $ git clone https://github.com/USERNAME/REPOSITORY-NAME.git
 Username: your_username
 Password: your_token
 ```
-To update your GitHub access credentials see this [link](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials#updating-your-access-tokens).
 
-If after creating a repository, you need to [switch from HTTPS to SSH](https://docs.github.com/en/github/getting-started-with-github/managing-remote-repositories#switching-remote-urls-from-https-to-ssh) type:
+If, after creating a repository, you need to [switch from HTTPS to SSH](https://docs.github.com/en/github/getting-started-with-github/managing-remote-repositories#switching-remote-urls-from-https-to-ssh), type:
 ```bash
 $ git remote set-url origin git@github.com:USERNAME/REPOSITORY-NAME.git
 ```
 
-To check whether Git is using HTTP or SSH, the following command shows the URL that the repository will fetch from and push to, which also indicates the protocol:
+The following command shows the URL that the repository will fetch from and push to, so it indicates whether Git is using HTTP or SSH:
 ```bash
 $ git remote show origin
 ```
+The URL starts with git@github<area>.com for SSH and with https<area>://github.com for HTTPS.
 
 
 ## Create (Remote and Local) Repositories
 You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
 
-You can create a Git repository from the terminal with `$ git init` or from GitHub.com. With the first option, you will later need to call that local repository from GitHub; for the second option, you will later need to clone the remote repository into your local machine. Below are the steps for creating a repository using GitHub.
+You can create a Git repository from the terminal with `$ git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
 
-In GitHub.com click the plus sign at the top and choose 'New Repository' or under 'Repositories' select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (a README file is usually recommended). Although it's optional, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; a good option might be to type and choose 'tex', it excludes junk files from Latex. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
-
-- If you are going to move an existing project (i.e. folder with files) to the repository just created, make sure to have or create a *.gitignore* file immediately after the repository is created, so that the unwanted files are ignored right away when you include files with those extensions in your local repository; otherwise, if you first upload a file with an extension that you don't want to track and then create the *.gitignore* file, you will need to untrack the file with the command: `$ git rm --cached <filename.ext>`.
+### Creating a repository in GitHub
+In github.com click the plus sign at the top right corner and choose 'New Repository' or under the 'Repositories' tab select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (recommended). Also, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
+- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with the command: `$ git rm --cached <filename.ext>`.
 - You can place the *.gitignore* file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
-- File extensions to include in the *.gitignore* file: Latex junk, Excel files (.xls*) because of size limits and they will later be processed into .mat or .dta files. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
-- Do **not** ignore: .tex files, figures (you may want them later if you change the code).
+- It might be a good idea to include Excel files (.xls*) in the *.gitignore* file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
 
-Once you created a repository in GitHub, copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to clone when setting up Git above. Thus there are two options: using HTTPS (recommended) or SSH.
+Once you created a repository in GitHub, click on 'Code' and copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to clone when setting up Git above. Thus there are two options: using HTTPS (recommended) or SSH.
 
 Using the `cd` command in the terminal, go to the folder where you want to set the repository and paste the URL:
 ```bash
