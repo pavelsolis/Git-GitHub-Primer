@@ -17,7 +17,7 @@ All Git commands have the following syntax: `git verb options`.
 Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other great introductory pieces to Git and GitHub.
 
 
-## [Setting Up Git](https://help.github.com/en/articles/set-up-git)
+## Setting Up Git
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
 ```bash
 $ git --version
@@ -49,15 +49,16 @@ $ git config --global rebase.autoStash true
 ```
 <!-- $ git config --global pull.rebase true		# You replay your local commits on top of the newly updated origin/main -->
 
-To check the configuration settings, type `git config --list`.
+To check the configuration settings, type `git config --list`. For more on setting up Git see [here](https://help.github.com/en/articles/set-up-git).
 
-To access remote branches, [authenticate](https://help.github.com/en/articles/which-remote-url-should-i-use#cloning-with-https-urls-recommended) with GitHub from Git using either HTTPS (recommended) or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
+To access a GitHub repository from Git, you need to [authenticate](https://help.github.com/en/articles/which-remote-url-should-i-use#cloning-with-https-urls-recommended) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
 
-If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. 
-Notes: (1) You need Git 1.7.10 or newer to use the osxkeychain credential helper, (2) Since 2019, Git installed [manually](https://cfss.uchicago.edu/setup/git/) will likely use a credential helper provided by your operating system, so you may not need to configure the credential helper as explained below.
+### HTTPS
+If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. You need Git 1.7.10 or newer to use the osxkeychain credential helper
+Note: You may not need to configure the credential helper as explained below because since 2019 Git may use a credential helper provided by your operating system.
 
 - Find out if the credential helper is already installed. In the terminal, type:
 ```bash
@@ -74,35 +75,30 @@ Otherwise, follow step 2 on the [GitHub help page](https://docs.github.com/en/gi
 $ git config --global credential.helper osxkeychain
 ```
 
-- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you for your GitHub user and password (which you will only need to provide once). Note: If you have a personal access token (see below), enter it instead of your password in order to perform Git operations over HTTPS.
+- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you to authenticate (only once) with your user and a personal access token or PAT. [Since 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/), authetication in GitHub uses a [PAT](https://github.com/settings/tokens) because is more secure than a password. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. Once you have a token, enter it instead of your password to perform Git operations over HTTPS.
+Note: When prompted for a username and password, you must provide your GitHub username and your PAT. Notice that the command line prompt won't specify that you should enter your PAT when it asks for your password.
 
-**Update:** Authetication in GitHub [changed in 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/). Password-based authentication for Git is deprecated, and using a personal access token ([PAT](https://github.com/settings/tokens)) is more secure. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. PATs can only be used for HTTPS Git operations. Once you have a token, you can enter it instead of your password when performing Git operations over HTTPS.
-
-When you change your username, password, or personal access token on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the Keychain (the credential helper `git credential-osxkeychain`) -- since they may be cached on your computer -- in order to replace your old password with the token. To delete your credentials via the command line, type
-
+When you change your username, password, or personal access token on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
 ```bash
 $ git credential-osxkeychain erase
 host=github.com
 protocol=https
 > [Press Return]
 ```
-
-If it's successful, nothing will print out. To test that it works, try using commands like `git clone`, `git fetch`, `git pull` or `git push` with HTTPS URLs. If you are prompted for your GitHub username and password, the keychain entry was deleted. For example, on the command line you would enter the following:
-
+If it's successful, nothing will print out. To test that it works, try using commands like `git clone`, `git fetch`, `git pull` or `git push` with HTTPS URLs. If you are prompted for your GitHub username and PAT, the keychain entry was deleted. For example, on the command line you would enter:
 ```bash
-$ git clone https://github.com/username/repo.git
+$ git clone https://github.com/USERNAME/REPOSITORY-NAME.git
 Username: your_username
 Password: your_token
 ```
+To update your GitHub access credentials see this [link](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials#updating-your-access-tokens).
 
-When prompted for a username and password, you must provide your GitHub username and your PAT. Notice that the command line prompt won't specify that you should enter your PAT when it asks for your password.
-
-To update your GitHub access credentials see this [link](https://docs.github.com/en/github/authenticating-to-github/updating-your-github-access-credentials). Also, if you decide to use SSH with GitHub, there are links there that can be helpful. After creating a repository, you may need to [switch from HTTPS to SSH](https://docs.github.com/en/github/getting-started-with-github/managing-remote-repositories#switching-remote-urls-from-https-to-ssh) using:
+If after creating a repository, you need to [switch from HTTPS to SSH](https://docs.github.com/en/github/getting-started-with-github/managing-remote-repositories#switching-remote-urls-from-https-to-ssh) type:
 ```bash
 $ git remote set-url origin git@github.com:USERNAME/REPOSITORY-NAME.git
 ```
 
-To check whether Git is using HTTP or ssh, the following command shows the URL that the repository will fetch from and push to, which also indicates the protocol:
+To check whether Git is using HTTP or SSH, the following command shows the URL that the repository will fetch from and push to, which also indicates the protocol:
 ```bash
 $ git remote show origin
 ```
