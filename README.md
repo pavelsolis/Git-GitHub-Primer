@@ -2,25 +2,23 @@
 
 **Git** is a version control software. **GitHub** is a hosting service to track changes. With them, you can keep track of the changes in a project and have a backup online.
 
-First, a few basic concepts:
-- A **repository** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
-- A **branch** is a specific sequence of commits. An **upstream** is simply another branch name, usually an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
+A few basic concepts to start:
+- A **repository** is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
+- A **branch** is a specific sequence of commits. An **upstream** is an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
-Below are step-by-step instructions on how to work with Git and GitHub from scratch using the terminal (or shell), but requires the following:
+Below are step-by-step instructions on how to work with Git and GitHub from scratch using the terminal (or shell).
 - A line starting with '$' refers to commands typed in the terminal, and a line starting with '>' represents output shown in the terminal.
-- The most commonly used commands in the terminal when working with Git allow you to list files and navigate through folders: `ls`, `cd`.
-- The most commonly used **Git commands** are: `status`, `add`, `commit`, `pull`, `push`. Other useful commands include: `branch`, `checkout`, `reset`, `diff`, `merge`, `clone`. All these commands are explained below.
+- The most commonly used commands in the terminal when working with Git are: `ls` to list files, and `cd` to navigate through folders.
 
-All Git commands have the following syntax: `git verb options`. For a useful Git cheat-sheet see [here](https://gist.github.com/davfre/8313299). Git commands only work when (in the terminal) you are in a folder that contains a Git repository, otherwise the terminal will send an error message
-```bash
-> Not a git repository
-```
+All Git commands have the following syntax: `git verb options`.
+- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below, but you can see a useful Git cheat-sheet [here](https://gist.github.com/davfre/8313299).
+- Git commands only work when (in the terminal) you are in a folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
 
 Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other great introductory pieces to Git and GitHub.
 
 
 ## [Setting Up Git](https://help.github.com/en/articles/set-up-git)
-In the terminal type the following to compare your current version of Git with the [latest release](https://git-scm.com/downloads)
+Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
 ```bash
 $ git --version
 ```
@@ -30,7 +28,7 @@ Git uses a username to associate commits with an identity. Set your Git username
 ```bash
 $ git config --global user.name "Your Name"
 ```
-Note: The Git username is not the same as your GitHub username. 
+Note: Your Git username is not the same as your GitHub username. 
 
 Set your commit email address in Git:
 ```bash
@@ -42,7 +40,7 @@ To visualize changes more easily in the terminal,  tell Git to colorize its outp
 $ git config --global color.ui "auto"
 ```
 
-Other optional but useful Git configuartions are (see [1](https://spin.atomicobject.com/2020/05/05/git-configurations-default/), [2](https://stackoverflow.com/questions/24114676/git-error-failed-to-push-some-refs-to-remote)):
+Other optional but useful Git configuartions are (see [1](https://spin.atomicobject.com/2020/05/05/git-configurations-default/) and [2](https://stackoverflow.com/questions/24114676/git-error-failed-to-push-some-refs-to-remote)):
 ```bash
 $ git config --global init.defaultBranch main	# Rename the default branch name to main
 $ git config --global fetch.prune true		# Clean removed remote branches
@@ -53,14 +51,15 @@ $ git config --global rebase.autoStash true
 
 To check the configuration settings, type `git config --list`.
 
-[Authenticate](https://help.github.com/en/articles/which-remote-url-should-i-use#cloning-with-https-urls-recommended) with GitHub from Git using either HTTPS (recommended) or SSH. If you don't authenticate, when you try to clone, pull, push, etc. to the remote repository, the terminal will display the following error:
+To access remote branches, [authenticate](https://help.github.com/en/articles/which-remote-url-should-i-use#cloning-with-https-urls-recommended) with GitHub from Git using either HTTPS (recommended) or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
 
-If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. Note 1: You need Git 1.7.10 or newer to use the osxkeychain credential helper. Note 2: Since 2019, Git installed [manually](https://cfss.uchicago.edu/setup/git/) will likely use a credential helper provided by your operating system, so you may not need to configure the credential helper as explained below.
+If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. 
+Notes: (1) You need Git 1.7.10 or newer to use the osxkeychain credential helper, (2) Since 2019, Git installed [manually](https://cfss.uchicago.edu/setup/git/) will likely use a credential helper provided by your operating system, so you may not need to configure the credential helper as explained below.
 
-- Find out if the credential helper is already installed. In the terminal, enter
+- Find out if the credential helper is already installed. In the terminal, type:
 ```bash
 $ git credential-osxkeychain
 ```
@@ -75,7 +74,7 @@ Otherwise, follow step 2 on the [GitHub help page](https://docs.github.com/en/gi
 $ git config --global credential.helper osxkeychain
 ```
 
-- After this, the next time you try to clone, pull, push, etc. from the terminal, it will ask you for your GitHub user and password (which you will only need to provide once). Note: If you have a personal access token (see below), enter it instead of your password in order to perform Git operations over HTTPS.
+- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you for your GitHub user and password (which you will only need to provide once). Note: If you have a personal access token (see below), enter it instead of your password in order to perform Git operations over HTTPS.
 
 **Update:** Authetication in GitHub [changed in 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/). Password-based authentication for Git is deprecated, and using a personal access token ([PAT](https://github.com/settings/tokens)) is more secure. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. PATs can only be used for HTTPS Git operations. Once you have a token, you can enter it instead of your password when performing Git operations over HTTPS.
 
