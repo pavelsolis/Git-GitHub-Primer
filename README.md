@@ -101,7 +101,7 @@ The following command shows the URL that the repository will fetch from and push
 ```bash
 $ git remote show origin
 ```
-The URL starts with git@github<area>.com for SSH and with https<area>://github.com for HTTPS.
+The exact format of the URL depends on the protocol you are using, it starts with https<area>://github.com for HTTPS and with git@github<area>.com for SSH.
 
 
 ## Create (Remote and Local) Repositories
@@ -109,42 +109,26 @@ You need to designate a folder to be a Git repository. When you initialize a fol
 
 You can create a Git repository from the terminal with `$ git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
 
-### Creating a repository in GitHub
+### Creating a Repository in GitHub
 In github.com click the plus sign at the top right corner and choose 'New Repository' or under the 'Repositories' tab select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (recommended). Also, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
-- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with the command: `$ git rm --cached <filename.ext>`.
+- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `$ git rm --cached <filename.ext>`.
 - You can place the *.gitignore* file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
 - It might be a good idea to include Excel files (.xls*) in the *.gitignore* file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
 
-Once you created a repository in GitHub, click on 'Code' and copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to clone when setting up Git above. Thus there are two options: using HTTPS (recommended) or SSH.
+Once you created a repository in GitHub, click on 'Code' and copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to clone when setting up Git above, either HTTPS or SSH.
 
-Using the `cd` command in the terminal, go to the folder where you want to set the repository and paste the URL:
+Use the `cd` command to go to the folder where you want to set the repository and paste the URL as follows:
 ```bash
-$ cd <directory location>
+$ cd <path/to/folder>
 $ git clone <URL>
 ```
+This initializes a folder as a Git repository in your machine. You can now make changes to your project either in github.com or in your local machine.
+- To pull down from github.com the most recent version of the project to your machine, type `git pull`.
+- To upload changes made to files in your local machine, commit the changes and push them to the remote. See below.
 
-This initializes a folder as a Git repository in your machine. To pull down from GitHub.com the most recent version of the project to your machine, use:
-```bash
-$ git pull <remote> <branch>
-# OR
-$ git pull
-```
-
-You can update the *.gitignore* file, the README file, move an existing project into the local repository and commit the changes.
-
-**To change name of repositories.** You need to change the name in GitHub.com (under the settings of a project) and in your local machine. Use `git config` to get the remote URL and `git remote set -url origin` to update the URL.
-
-### Adding a New Repository to Use the Branching Model (See Below)
-In GitHub.com go to repositories and click in 'New'. Type a name and choose whether you want the repository to be private or public. Do not initialize with a README file. Add *.gitignore* file for TeX. Click 'Create'.
-
-Once created, click on 'Clone or Download' and copy the https address. In the terminal, use the `cd` command to go to the folder GitHub/Book, and then
-```bash
-$ git clone <URL>	# Use the http address you just copied
-```
-
-A new folder with the name of the new repository will be created under the folder GitHub/Book. Update the *.gitignore* file in GitHub.com including extensions for Excel, Matlab, Stata, R, Python, Shell and Lyx. Copy and paste the contents of the Replication-Folder into the new repository. **Note**: Git does not include empty folders in updates (in `commit` or `push` commands) to remote repositories like GitHub. To make Git to recognize such folders, the non-official convention is to put a *.gitkeep* file in them. For this, use `cd` to move to the empty folder and type `touch .gitkeep`.
-
-Use the following commands in the terminal to update the local and remote repositories: `cd`, `add`, `commit`, `pull`, `push`. Follow the branching model below.
+Notes:
+- Git does not include empty folders in updates to remote repositories in GitHub. To make Git to recognize such folders, the non-official convention is to put a *.gitkeep* file in them. For this, move to the empty folder with `cd` and type `touch .gitkeep`.
+- If at some point you want to rename a repository, you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
 
 
 ## Daily Workflow: Status, Add, Commit and Push
