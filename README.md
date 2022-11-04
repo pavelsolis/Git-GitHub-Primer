@@ -131,32 +131,33 @@ Notes:
 - If at some point you want to rename a repository, you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
 
 
-## Daily Workflow: Status, Add, Commit and Push
-To see what has changed in your local repository and/or what is different in your local machine with respect to the version in GitHub (in the cloud), use:
+## Regular Git Workflow: Track Changes
+When you modify files in a project, you don't want to keep a record of every little change you do. You want to make changes, go back and forth, and once you are happy with the new version (i.e. no mistakes in code, no compilation errors, consistent output), you register (or commit) the changes.
+
+It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes.
+
+Git works by saving changes, not entire files. To track a timeline of edits, Git uses three internal state management systems, known as *trees*.
+- The **working directory** tracks the immediate changes to the content of files and directories.
+- The **index** is the staging area for Git to keep track of the changes in the working directory ready to be committed.
+- The **commit history** is a permanent record of the changes. In this tree, HEAD is the name of the current commit in the current branch.
+
+The workflow described above can be implemented with the `status`, `add`, `reset` and `commit` commands as follows:
 ```bash
-$ git status
+git status 						   # Show pending changes to the trees in your local machine
+
+git add <filename1.ext> ... <filenameN.ext>		   # Select the modified files to be committed
+git add .						   # Add all files in the directory
+git reset <filename.ext>				   # Unstage a file without changing the working directory (i.e. a safe command)
+git reset						   # Unstage all files to let you re-build the staging area
+
+git commit -m "Brief (< 72 characters) meaningful comment" # Lock in the changes to the files in the staging area
 ```
+- When your local version is not ahead to that in GitHub, the terminal will display `Your branch is up to date with 'origin/<main>'. nothing to commit, working tree clean`. However, this does not tell you whether the remote version is ahead of your local version. That is why it is recommended to **always pull before you push**.
 
-- When your local version is not ahead to that in GitHub, the terminal will display `Your branch is up to date with 'origin/<parent>', nothing to commit, working tree clean`. However, note that this does not tell you whether the remote version is ahead of your local version. That is why it is recommended to always pull before pushing.
 
-Before committing a change, you first need to put the file(s) in the **staging area** to keep track of them. To include new (i.e. untracked) or update modified (i.e. not staged) files to the **staging area** (from which changes will be recorded), use:
-```bash
-$ git add <filename1.ext> <filename2.ext>
-```
-
-- Once a file is in the staging area (also known as index), Git keeps track of its changes.
-- To add *all* files in the directory, use: `git add .`, `git add -A` or `git add --all`.
-- To keep tracking changes to files but place them back into the 'unstaged' area (in other words, without changing the history at all nor changing what is going on in the working directory, i.e. a safe command), use: `git reset HEAD`
-- HEAD is the name of the current commit in the current branch.
-- To do the same but for a specific file, use: `git reset HEAD <filename.ext>`, `git reset HEAD -- path/to/file` or `git reset <filename.ext>`. To unstage all files at once, you can also use: `git reset HEAD -- .`.
-- To stop tracking changes to a file without removing it from the working directory (i.e. to only remove the file from the index or staging area), use: `git rm --cached <filename.ext>`. The  working directory is not affected by `git rm --cached`, because `--cached` works directly in the index. This command will set the file to the state it was after it was added to the staging area.
-- See below to discard changes in the working directory.
+- `--cached` does not affect the working directory because it works directly in the index.
 - `--` tells Git that what follows after the two dashes are filenames.
 
-Once you finish making changes to the files in the staging area, the next thing to do is to record (i.e. **commit**) those changes. That is, to lock in the changes to your *local* repository, you need to commit a snapshot of the files in the staging area:
-```bash
-$ git commit -m "Brief (< 72 characters) meaningful comment"
-```
 - Always run tests and review changes *before* committing. When working with code, this means to commit working versions of it.
 - See this [link](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53) for guidelines on writing commit messages.
 
@@ -179,13 +180,6 @@ To sync up the changes made locally with the repository in GitHub.com, use:
 $ git push
 ```
 
-### Difference Between Stage and Commit
-You don't want to keep a record of *every* little change you do. You want to make changes, go back and forth, and once you are happy with the new version (no mistakes in code, no compilation errors, consistent output), you register the changes.
-
-It is recommended to commit *per discrete task* (which may involve multiple files). However, you may be modifying more files than the ones involved in a particular task. With `git add` you can select which of the modified files have to do with that particular task, and commit only changes to those files without having to commit the changes to the other modified files (unrelated to the task). In other words, staging allows you to commit changes per task. That is, with `git add` you can choose which of the modified files to commit; with `git commit`, however, you don't get to choose since all the files in the staging area are committed.
-
-Make 'small' frequent commits rather than big infrequent commits.
-
 ### See Changes Before Adding/Committing
 Three different ways to see the changes made to a file before adding and/or committing:
 ```bash
@@ -198,7 +192,7 @@ $ git diff HEAD [filename]	# show differences between current commit and working
 ```
 It'll work recursively on directories, and if no paths are given, it shows all the changes. [Here](https://stackoverflow.com/questions/1587846/how-do-i-show-the-changes-which-have-been-staged) is a graphic that explains the differences between using `--cached` and `HEAD`.
 
-### Discard Changes Before Adding/Committing
+### Discard Changes Before Adding/Committing in the working directory
 Discard all local changes, but save them for possible re-use later: 
 ```bash
 $ git stash
@@ -238,7 +232,7 @@ $ git reset HEAD path/to/unwanted_file
 ```
 
 
-## Git Workflow: Branching, Merging, Pull Requests
+## Refined Git Workflow: Branching, Merging, Pull Requests
 *Summary*: Make a branch to solve a feature request, code the feature, make commits, get latest version of the default branch, merge branches, push your branch up, make a pull request for other people to peer review the code, resolve conflicts and make more merges to an existing pull request depending on the feedback received. When your changes are approved, your branch is merged to the parent branch and everybody's branches can inherit those changes.
 
 Branches are the most powerful part of Git. They allow to trying things out. By isolating features into separate branches, everybody can work independently, yet it is still possible to share changes with other developers when necessary.
