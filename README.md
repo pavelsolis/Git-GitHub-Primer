@@ -107,11 +107,11 @@ The exact format of the URL depends on the protocol you are using, it starts wit
 ## Create (Remote and Local) Repositories
 You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
 
-You can create a Git repository from the terminal with `$ git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
+You can create a Git repository from the terminal with `git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
 
 ### Creating a Repository in GitHub
 In github.com click the plus sign at the top right corner and choose 'New Repository' or under the 'Repositories' tab select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (recommended). Also, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
-- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `$ git rm --cached <filename.ext>`.
+- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `git rm --cached <filename.ext>`.
 - You can place the *.gitignore* file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
 - It might be a good idea to include Excel files (.xls*) in the *.gitignore* file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
 
@@ -134,102 +134,65 @@ Notes:
 ## Regular Git Workflow: Track Changes
 When you modify files in a project, you don't want to keep a record of every little change you do. You want to make changes, go back and forth, and once you are happy with the new version (i.e. no mistakes in code, no compilation errors, consistent output), you register (or commit) the changes.
 
-It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes.
+It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git differences between new and modified files: new files are 'untracked' and modified files are 'unstaged'.
 
 Git works by saving changes, not entire files. To track a timeline of edits, Git uses three internal state management systems, known as *trees*.
 - The **working directory** tracks the immediate changes to the content of files and directories.
 - The **index** is the staging area for Git to keep track of the changes in the working directory ready to be committed.
-- The **commit history** is a permanent record of the changes. In this tree, HEAD is the name of the current commit in the current branch.
+- The **commit history** is a permanent record of the changes. In this tree, HEAD is the name of the *last* commit in the current branch.
 
 The workflow described above can be implemented with the `status`, `add`, `reset` and `commit` commands as follows:
 ```bash
-git status 						   # Show pending changes to the trees in your local machine
+$ git status 					# Show pending changes to the trees in your local machine
 
-git add <filename1.ext> ... <filenameN.ext>		   # Select the modified files to be committed
-git add .						   # Add all files in the directory
-git reset <filename.ext>				   # Unstage a file without changing the working directory (i.e. a safe command)
-git reset						   # Unstage all files to let you re-build the staging area
+$ git add <filename1.ext> ... <filenameN.ext>	# Add modified files to the staging area
+$ git add .					# Add all modified files to the staging area
+$ git reset <filename.ext>			# Unstage a file without changing the working directory (i.e. a safe command)
+$ git reset					# Unstage all files so that you can re-build the staging area
 
-git commit -m "Brief (< 72 characters) meaningful comment" # Lock in the changes to the files in the staging area
+$ git commit -m "Brief meaningful comment"	# Lock in the changes to the files in the staging area
+
+$ git push					# Sync up the changes made locally with the remote repository
 ```
-- When your local version is not ahead to that in GitHub, the terminal will display `Your branch is up to date with 'origin/<main>'. nothing to commit, working tree clean`. However, this does not tell you whether the remote version is ahead of your local version. That is why it is recommended to **always pull before you push**.
+- When your local version is not ahead of the remote (in GitHub), `git status` will display `Your branch is up to date with 'origin/<main>'. nothing to commit, working tree clean`. However, this does not tell you whether the remote version is ahead of your local version. For this reason, **always pull before you push**.
+- If there are many unstaged and untracked files and you want to include them all to the staging area except one (or a few more), it is easiest to add them all and then remove the unwanted ones with `git add .` and `git reset <filename.ext>`.
+- Always run tests and review changes *before* committing. Only commit working versions of code.
+- Commit messages should be short (< 72 characters). For good practices on writing good commit messages, see [1](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53), [2](https://chris.beams.io/posts/git-commit/) and [3](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/).
+- If you run `git commit` without a message or option, your default text editor will open up in the screen of your terminal and you can write a multi-line message. **In a Mac**, if the Vi editor opens in command mode, press `i` (to switch to insert or edit mode) and start writing your comment. When you finish writing your message, sequentially press `Esc` + `:wq` + `Enter`, where `Esc` exits the insert mode, `:` enters the command mode, `w` writes and saves the commit message, `q` exits the editor (see [here](https://apple.stackexchange.com/questions/252541/how-do-i-escape-the-git-commit-window-from-os-x-terminal)). To change your default editor (e.g. to vim, nano, emacs), type `git config --global core.editor nano`. The difference between vim and nano is that vim is modal and nano is not. So with vim you are constantly changing between command mode and edit mode, whereas in nano, as in emacs, you are in one mode and your commands use special key combinations.
 
-
-- `--cached` does not affect the working directory because it works directly in the index.
-- `--` tells Git that what follows after the two dashes are filenames.
-
-- Always run tests and review changes *before* committing. When working with code, this means to commit working versions of it.
-- See this [link](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53) for guidelines on writing commit messages.
-
-When you want to commit all the files in the staging area (e.g. a whole project), you can combine the add and commit steps in one step as follows:
+### See Changes Before Committing
+If you don't remember what changes were made to each file, you can see them using three different ways (illustrated [here](https://stackoverflow.com/questions/1587846/how-do-i-show-the-changes-which-have-been-staged)):
 ```bash
-$ git commit -a -m "Message"
-# OR
-$ git commit -am "Message"
+$ git diff <filename.ext>		# Show unstaged changes (i.e. changes between the working directory and the index)
+
+$ git diff --staged <filename.ext>	# Show what you're about to commit (i.e. changes between the index and the HEAD)
+
+$ git diff HEAD <filename.ext>		# Show changes since the last commit (i.e. changes between the working directory and the HEAD)
 ```
-- If you run `git commit` without a message or option, your default text editor will open up and you can write a multi-line message. The terminal will show a screen to allow you to write a message. In a Mac it might be the `Vi` editor. To start writing, press `i` (to switch to the insert mode) and write your comment. To exit the insert mode and switch to the command mode in order to save the changes, press `Esc`. Then type `:wq` to save the commit message and exit the editor, where `:` enters the command mode, `w` is for write/save and `q` is for quit (see [here](https://apple.stackexchange.com/questions/252541/how-do-i-escape-the-git-commit-window-from-os-x-terminal)). In summary,
+- It'll work recursively on directories. If no path or file are given, `git diff` shows the changes in all files.
+
+### Discard Unwanted Changes
+You can discard unwanted changes to a file permanently *before* they are staged (**Warning**: It erases any unsaved work!):
 ```bash
-Esc + :wq + Enter
-```
-Note: Vi stands for Visual, it is an early attempt to a visual text editor. Vim stands for Vi IMproved and it is an implementation of the Vi standard with many additions. You can change your default editor (e.g. to vim, nano, emacs) with, for example: `git config --global core.editor nano`. The big difference between vim and nano is that vim is modal and nano is not. So with vim you are constantly changing between command mode and edit mode, whereas in nano, as in emacs, you are in one mode and your commands use special key combinations.
-
-See [here](https://chris.beams.io/posts/git-commit/) and [here](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/) for good practices on writing good commit messages.
-
-To sync up the changes made locally with the repository in GitHub.com, use:
-```bash
-$ git push
+$ git restore <filename.ext>		# For a specific file
+$ git restore .				# For all unstaged files in the working directory
 ```
 
-### See Changes Before Adding/Committing
-Three different ways to see the changes made to a file before adding and/or committing:
-```bash
-$ git diff [filename]		# show differences between index and working tree (i.e. changes you haven't staged to commit)
-
-$ git diff --cached [filename]	# show differences between current commit and index (i.e. what you're about to commit)
-$ git diff --staged 		# does exactly the same thing, use what you like
-
-$ git diff HEAD [filename]	# show differences between current commit and working tree
-```
-It'll work recursively on directories, and if no paths are given, it shows all the changes. [Here](https://stackoverflow.com/questions/1587846/how-do-i-show-the-changes-which-have-been-staged) is a graphic that explains the differences between using `--cached` and `HEAD`.
-
-### Discard Changes Before Adding/Committing in the working directory
-Discard all local changes, but save them for possible re-use later: 
-```bash
-$ git stash
-```
-
-Discard local changes (permanently) to a file *before* they are staged (**Warning**: When you do this, you will lose any unsaved work!):
-```bash
-$ git restore <file.ext>			# For a specific file
-$ git restore .					# For all unstaged files in current working directory
-
-	# For Git versions previous to 2.23
-$ git checkout -- <file.ext>			# For a specific file
-$ git checkout HEAD -- <filename.ext>
-$ git checkout -- .				# For all unstaged files in current working directory
-```
-
-
-Discard all local changes to all files permanently:
-```bash
-$ git reset --hard
-```
-
-### Remove File from Commit
-To move a wrongly commited file to the staging area from a previous commit (without canceling the changes done): 
+### Uncommit Changes
+To move incomplete or wrongly committed files back to the staging area from the immediate commit (maintaining the changes):
 ```bash
 $ git reset --soft HEAD^
-$ git reset HEAD path/to/unwanted_file		# Reset the unwanted files in order to leave them out from the commit
-$ git commit -c ORIG_HEAD 			# Commit again with this or the usual command
 ```
-Explained in this [link](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit), which includes a case where you also did a `git push`.
+If you also did a `git push`, see [this](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
 
-### Add All Files But One
-When you want to include all (unstaged or untracked) files to the staging area except one (or a few more), it is easiest to add them all and then remove the ones that you don't want to include in the commit.
+
+<!---
+- `--cached` does not affect the working directory because it works directly in the index.
+- `--` tells Git that what follows after the two dashes are filenames.
 ```bash
-$ git add .
-$ git reset HEAD path/to/unwanted_file
+$ git stash		# Discard all local changes, but save them for possible re-use later
 ```
+-->
 
 
 ## Refined Git Workflow: Branching, Merging, Pull Requests
