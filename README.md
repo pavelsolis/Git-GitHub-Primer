@@ -3,7 +3,7 @@
 **Git** is a version control software. **GitHub** is a hosting service to track changes. With them, you can keep track of the changes in a project and have a backup online.
 
 A few basic concepts to start:
-- A **repository** is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
+- A **repository** or repo is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
 - A **branch** is a specific sequence of commits. An **upstream** is an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
 Below are step-by-step instructions on how to work with Git and GitHub from scratch using the terminal (or shell).
@@ -171,6 +171,14 @@ $ git diff HEAD <filename.ext>		# Show changes since the last commit (i.e. chang
 ```
 - It'll work recursively on directories. If no path or file are given, `git diff` shows the changes in all files.
 
+
+### See History of Commits
+See a list of previous commits:
+```bash
+$ git log				# Shows the sequence of commits in the current branch
+$ git reflog				# Shows the sequence of actions in the repository
+```
+
 ### Discard Unwanted Changes
 You can discard unwanted changes to a file permanently *before* they are staged (**Warning**: It erases any unsaved work!):
 ```bash
@@ -196,18 +204,32 @@ $ git stash		# Discard all local changes, but save them for possible re-use late
 
 
 ## Refined Git Workflow: Branching, Merging, Pull Requests
-*Summary*: Make a branch to solve a feature request, code the feature, make commits, get latest version of the default branch, merge branches, push your branch up, make a pull request for other people to peer review the code, resolve conflicts and make more merges to an existing pull request depending on the feedback received. When your changes are approved, your branch is merged to the parent branch and everybody's branches can inherit those changes.
+**Branches** are the most powerful part of Git. They allow to trying things out. By isolating features into separate branches, everybody can work independently and, when necessary, share the changes with other developers. Git encourages workflows that branch and merge often, even multiple times in a day.
 
-Branches are the most powerful part of Git. They allow to trying things out. By isolating features into separate branches, everybody can work independently, yet it is still possible to share changes with other developers when necessary.
+All branches in the remote repo will hang from the remote URL *origin*, that is why it is important to have a branching model to distinguish between permanent (`main`, `development`) and temporary (`feature`, `fixes`) branches. A branching model describes a structure, naming conventions, rules for branching off and merging to. Since October 2020, any new repository is created with the default branch `main`. 
 
-Git encourages workflows that branch and merge often, even multiple times in a day.
+**CAUTION**: Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch Git will update the files in the repository to match the version to which you are moving to. If you introduce changes in one branch and suddenly realized that it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch:
+- If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch. Alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 
-All branches in the remote repo will hang from origin, that is why it is important to have a branching model (structure, naming conventions, rules for branching off and merging to) to distinguish between permanent (`main`, `development`) branches and among temporary (`feature`, `fixes`) branches.
+### Create a Branch
+Create a new branch **off** the *current* branch and go to the new branch:
+```bash
+$ git branch <branchname>		# Create a branch called <branchname>
+$ git push -u origin <branchname>	# Set the upstream for the branch
+					# Message displayed: "Branch '<branchname>' set up to track remote branch '<branchname>' from 'origin'"
+# OR
 
-*Note*: Since October 2020, any new repository is created with the default branch `main`, instead of `master`. In case you needed, you can rename an existing repository default branch from `master` to `main`, see [here](https://jarv.is/notes/github-rename-master/) and [here](https://www.git-tower.com/learn/git/faq/git-rename-master-to-main/). All references below assume that the default branch is `main`.
-
-**CAUTION**: Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch Git will update the files in the repository to match the version to which you are moving to. If you introduce changes in one branch and suddenly realized to it would be better to swith to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch:
-- If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch; alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
+$ git checkout <branchname>		# Switche to branch <branchname>
+# OR
+$ git checkout -b <branchname>		# Create branch <branchname> and switches to it
+# OR
+$ git checkout -t origin/<branchname>	# Creates <branchname>, switches to it and tracks (for push and pull) its remote branch
+# OR
+$ git checkout -b <branchname> origin/<branchname> # Same as previous but local and tracking branches can have different names
+```
+- You can now make changes to the new branch `<branchname>` without affecting the `main` branch.
+- If after switching to the branch you type `git branch`, the terminal will display: `main`, `* <branchname>`.
+- [Link](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch) explaining the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch.
 
 ### Daily Workflow (Cont.)
 Modify the files in the branch, add and commit to the branch as many edits as necessary with: `git add`, `git commit`.
@@ -230,14 +252,12 @@ If there are conflicts, they will be indicated in the respective file (you are H
 ### Knowing Where You Are and How to Move
 To see the available branches:
 ```bash
-$ git branch			# Displays all local branches
-$ git branch -r			# Displays all remote branches
-$ git branch -a			# Displays all local and remote branches
-
-> * main			# If only the main branch exists
-> * main, <branchname>	# If there are two branches
+$ git branch			# List all local branches
+$ git branch -r			# List all remote branches
+$ git branch -a			# List all local and remote branches
 ```   
-- The asterisk tells you the branch in which you are currently working on. If you configured Git to display its output in color, the current branch will be displayed in green; remote branches will be displayed in red; the rest of the branches (local non-current) will be displayed in white.   
+- An asterisk before a branch name tells you the branch in which you are currently working on.
+- If you configured Git to display its output in color, the current local branch will be displayed in green; remote branches will be displayed in red; the rest of the branches (local non-current) will be displayed in white.   
 
 ### Download the Changes in the Remote Repository to the Local Repository
 In the terminal, switch back to main and sync: 
@@ -252,34 +272,8 @@ $ git checkout <parent>		# Update the files to work on `parent`
 $ git pull
 ```
 
-### Create a Branch
-Create a new branch **off** the *current* branch and go to the new branch:
-```bash
-$ git branch <branchname>		# Creates a branch called <branchname>
-# OR
-$ git branch --set-upstream-to=origin/<branch> <branch>	# To set tracking information for the branch
-					# Message displayed: "Branch '<branchname>' set up to track remote branch '<branchname>' from 'origin'"
-# OR
-
-$ git checkout <branchname>		# Switches to branch <branchname>
-# OR
-$ git checkout -b <branchname>		# Creates branch <branchname> and switches to it
-# OR
-$ git checkout -t origin/<branchname>	# Creates <branchname>, switches to it and tracks (for push and pull) its remote branch
-# OR
-$ git checkout -b <branchname> origin/<branchname> # Same as previous but local and tracking branches can have different names
-```
-- You can now make changes to the new branch `<branchname>` without affecting the `main` branch.
-- If after switching to the branch you type `git branch`, the terminal will display: `main`, `* <branchname>`.
-- [Link](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch) explaining the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch.
 
 
-### See List of Commits
-See a list of previous commits:
-```bash
-$ git log				# Shows the sequence of commits in the current branch
-$ git reflog				# Shows the sequence of actions in the repository
-```
 
 ### Upload Changes to the Remote Repository
 Save all your commits in the local branch `<branchname>` to the remote repository (your branch `<branchname>` in GitHub):
@@ -313,6 +307,8 @@ When your pull request is approved and conflict-free, you can add your code to t
 
 Someone with privileges can accept the changes by clicking the green button 'Merge pull request', then the 'Confirm merge' button. The changes will now show up in the `<parent>` branch.
 - It is usually a bad idea to merge your own pull requests when working with a team.
+
+make a pull request for other people to peer review the code, resolve conflicts and make more merges to an existing pull request depending on the feedback received. When your changes are approved, your branch is merged to the parent branch and everybody's branches can inherit those changes.
 
 ### Delete Branches
 Only delete temporary branches (`ftr` and `fix`), not permanent branches (`dev`).
@@ -349,6 +345,10 @@ $ git fetch -p				# Prune remote branches
 # OR
 $ git pull -p
 ```
+
+<!---
+In case you needed, you can rename an existing repository default branch from `master` to `main`, see [here](https://jarv.is/notes/github-rename-master/) and [here](https://www.git-tower.com/learn/git/faq/git-rename-master-to-main/). All references below assume that the default branch is `main`.
+-->
 
 
 
