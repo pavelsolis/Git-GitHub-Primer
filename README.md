@@ -319,7 +319,7 @@ $ git pull -p
 ## A Branching Model for Research <a name="branching-model"></a>
 This section adapts the following [git-flow branching model](https://nvie.com/posts/a-successful-git-branching-model/) of Vincent Driessen to a research project.
 ```bash
-$ git checkout -b <branchname> <parent>	# Create a branch <branchname> off the <parent> branch and switch to it
+$ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
 
 $ git commit -am "Your message"		# Commit changes
 
@@ -328,34 +328,32 @@ $ git merge --no-ff <branchname>	# Merge changes in <branchname> to <parent> wit
 
 $ git push origin <parent>		# Push changes to the server
 $ git push origin <branchname>
-$ git branch -d <branchname>		# Remove local and remote branches
+$ git branch -d <branchname>		# Delete local and remote branches
 $ git push origin --delete <branchname>
 ```
 
 ### Naming Conventions <a name="naming"></a>
-Branch names have the following structure: category/type/type-name.
+Branch names have the following structure: category/type/type-name. Notice that a forward slash separates the tokens.
 
 The branching categories are: 
 - `dev` branch off from `main` and merge back into `main`. It is a permanent branch.
 - `ftr` branch off from `dev` and merge back into `dev`. It is a temporary branch.
 - `fix` branch off from `main` or `dev` and merge back into `main` or `dev`. It is a temporary branch.
 
-Most of the branches that will be used are feature `ftr` branches because `dev` is a permanent branch and `fix` branches are mainly used to correct bugs found in the `dev` branch or in the `main` branch (due to a -recent- merge from the `dev` branch). 
+Most of the branches that will be used are feature `ftr` branches because `dev` is a permanent branch and `fix` branches are mainly used to correct bugs found in the `dev` or `main` branches (e.g. due to a recent merge from the `dev` branch).
 
-These are the naming conventions to distinguish the temporary (feature and fix) branches:
-- To distinguish a `fix` branched off from `main` or `dev`, the names of `fix` branches will begin with: `fix/mst` or `fix/dev`.
-- There can be three types of feature branches and so `ftr` can take any of three tokens: `data`, `code`, `docs`.
-  - `data` branches deal with raw or analytic data so this token will be followed by: `raw` and `ans`.
-  - `code` branches deal with pre-analysis or analysis of the data so this token will be followed by: `pre` and `ans`.
-  - `docs` branches deal with issues on paper, slides, equations, figures, tables, statistics, references or settings so this token will be followed by: `ppr`, `sld`, `eqn`, `fig`, `tbl`, `sta`, `ref` and `set`.
+The naming conventions to distinguish the temporary (feature and fix) branches are:
+- Feature `ftr` branches can be of three types:
+	- `data` branches deal with raw or analytic data, so this token will be followed by: `raw` and `ans`.
+	- `code` branches deal with tidying or analyzing the data, so this token will be followed by: `tdy` and `ans`.
+	- `docs` branches deal with issues in the paper, slides, equations, figures, tables, references or settings so this token will be followed by: `ppr`, `sld`, `eqn`, `fig`, `tbl`, `ref` and `set`.
 - All three of the different types of feature branches can be used for experimenting or testing minor things unrelated to the previous categories, in which case any of the three types will be followed by: `tst`.
 - **Examples**: `data/raw/feature-name`, `code/ans/feature-name`, `docs/eqn/feature-name`, `fix/dev/feature-name`, `code/tst/feature-name`, `docs/tst/feature-name`.
-- Therefore, there are in total 17 possible types of temporary branches: 15 feautre branches (12 regular, 3 for tests), 2 fix branches.
+- Therefore, there are in total 17 possible types of temporary branches: 14 feautre branches (11 regular, 3 for tests), 2 fix branches.
+- To distinguish a `fix` branched off from `main` or `dev` branches, the names of `fix` branches will begin with: `fix/mst` or `fix/dev`.
 - With this convention (names *and* forward slashes), no feature branch can have the following names: `ftr/cat` (e.g. `data/raw`,`code/ans`), `fix/dev`, `fix/mst`. That is, their names need to include the `/feature-name` part (see first link above).
 
 - [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow.
-
-A forward slash separates the tokens.
 
 
 ### Implementation of the Branching Model <a name="implementation"></a>
@@ -428,6 +426,7 @@ $ git push origin --delete fix/xxx/name
 <!---
 [Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
 Use meaningful branch names.
+take any of three tokens
 -->
 
 
