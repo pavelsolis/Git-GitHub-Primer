@@ -16,8 +16,24 @@ All Git commands have the following syntax: `git verb options`.
 
 Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other great introductory pieces to Git and GitHub.
 
+## Contents
+1. [Setting Up Git](#setting-up)
+	1. [Accesing Remote Repositories](#remote-repos)
+3. [Create Repositories](#repositories)
+	1. [Creating a Repository in GitHub](#repo-github)
+5. [Regular Git Workflow](#regular-workflow)
+	1. [See Changes Before Committing](#git-diff)
+	1. [See History of Commits](#git-log)
+	1. [Discard Unwanted Changes](#git-restore)
+	1. [Uncommit Changes](#git-reset)
+7. [Refined Git Workflow](#refined-workflow)
+	1. [Create a Branch](#git-branch)
+	1. [Incorporate Changes to the Local Repo](#git-pull)
+	1. [Upload Changes to the Remote Repo](#git-push)
+	1. [Merge and Delete Branches](#delete)
+9. [Branching Model for Research](#branching-model)
 
-## Setting Up Git
+## Setting Up Git <a name="setting-up"></a>
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
 ```bash
 $ git --version
@@ -52,7 +68,7 @@ $ git config --global rebase.autoStash true
 To check the configuration settings, type `git config --list`. For more on setting up Git see [here](https://help.github.com/en/articles/set-up-git).
 
 
-### Accesing Remote Repositories
+### Accesing Remote Repositories <a name="remote-repos"></a>
 To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
@@ -104,12 +120,12 @@ $ git remote show origin
 The exact format of the URL depends on the protocol you are using, it starts with https<area>://github.com for HTTPS and with git@github<area>.com for SSH.
 
 
-## Create (Remote and Local) Repositories
+## Create Repositories <a name="repositories"></a>
 You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
 
 You can create a Git repository from the terminal with `git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
 
-### Creating a Repository in GitHub
+### Creating a Repository in GitHub <a name="repo-github"></a>
 In github.com click the plus sign at the top right corner and choose 'New Repository' or under the 'Repositories' tab select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (recommended). Also, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
 - Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `git rm --cached <filename.ext>`.
 - You can place the *.gitignore* file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
@@ -131,7 +147,7 @@ Notes:
 - If at some point you want to rename a repository, you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
 
 
-## Regular Git Workflow: Track Changes
+## Regular Git Workflow: Track Changes <a name="regular-workflow"></a>
 When you modify files in a project, you don't want to keep a record of every little change you do. You want to make changes, go back and forth, and once you are happy with the new version (i.e. no mistakes in code, no compilation errors, consistent output), you register (or commit) the changes.
 
 It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git differences between new and modified files: new files are 'untracked' and modified files are 'unstaged'.
@@ -161,7 +177,7 @@ $ git push					# Sync up the changes made locally with the remote repository
 - Commit messages should be short (< 72 characters). For good practices on writing good commit messages, see [1](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53), [2](https://chris.beams.io/posts/git-commit/) and [3](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/).
 - If you run `git commit` without a message or option, your default text editor will open up in the screen of your terminal and you can write a multi-line message. **In a Mac**, if the Vi editor opens in command mode, press `i` (to switch to insert or edit mode) and start writing your comment. When you finish writing your message, sequentially press `Esc` + `:wq` + `Enter`, where `Esc` exits the insert mode, `:` enters the command mode, `w` writes and saves the commit message, `q` exits the editor (see [here](https://apple.stackexchange.com/questions/252541/how-do-i-escape-the-git-commit-window-from-os-x-terminal)). To change your default editor (e.g. to vim, nano, emacs), type `git config --global core.editor nano`. The difference between vim and nano is that vim is modal and nano is not. So with vim you are constantly changing between command mode and edit mode, whereas in nano, as in emacs, you are in one mode and your commands use special key combinations.
 
-### See Changes Before Committing
+### See Changes Before Committing <a name="git-diff"></a>
 If you don't remember what changes were made to each file, you can see them using three different ways (illustrated [here](https://stackoverflow.com/questions/1587846/how-do-i-show-the-changes-which-have-been-staged)):
 ```bash
 $ git diff <filename.ext>		# Show unstaged changes (i.e. changes between the working directory and the index)
@@ -173,21 +189,21 @@ $ git diff HEAD <filename.ext>		# Show changes since the last commit (i.e. chang
 - It'll work recursively on directories. If no path or file are given, `git diff` shows the changes in all files.
 
 
-### See History of Commits
+### See History of Commits <a name="git-log"></a>
 See a list of previous commits:
 ```bash
 $ git log				# Shows the sequence of commits in the current branch
 $ git reflog				# Shows the sequence of actions in the repository
 ```
 
-### Discard Unwanted Changes
+### Discard Unwanted Changes <a name="git-restore"></a>
 You can discard unwanted changes to a file permanently *before* they are staged (**Warning**: It erases any unsaved work!):
 ```bash
 $ git restore <filename.ext>		# For a specific file
 $ git restore .				# For all unstaged files in the working directory
 ```
 
-### Uncommit Changes
+### Uncommit Changes <a name="git-reset"></a>
 To move incomplete or wrongly committed files back to the staging area from the immediate commit (maintaining the changes):
 ```bash
 $ git reset --soft HEAD^
@@ -204,7 +220,7 @@ $ git stash		# Discard all local changes, but save them for possible re-use late
 -->
 
 
-## Refined Git Workflow: Branching and Merging
+## Refined Git Workflow: Branching and Merging <a name="refined-workflow"></a>
 **Branches** are the most powerful part of Git. They allow to trying things out. By isolating features into separate branches, everybody can work independently and, when necessary, share the changes with other developers. Git encourages workflows that branch and merge often, even multiple times in a day.
 
 All branches in the remote repo will hang from the remote URL *origin*, that is why it is important to have a branching model to distinguish between permanent (`main`, `development`) and temporary (`feature`, `fixes`) branches. A branching model describes a structure, naming conventions, rules for branching off and merging to. Since October 2020, any new repository is created with the default branch `main`. 
@@ -212,7 +228,7 @@ All branches in the remote repo will hang from the remote URL *origin*, that is 
 **CAUTION**: Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch Git will update the files in the repository to match the version to which you are moving to. If you introduce changes in one branch and suddenly realized that it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch:
 - If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch. Alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 
-### Create a Branch
+### Create a Branch <a name="git-branch"></a>
 When you create a new branch **off** the *current* branch, you can make changes to files while you are in the the new branch without affecting the version of the files that you see when you move to the original or parent branch. You can implement this process with the `branch` and `checkout` commands as follows:
 ```bash
 $ git branch <branchname>		# Create a branch called <branchname>
@@ -237,7 +253,7 @@ $ git branch -a			# List all local and remote branches
 - An asterisk before a branch name tells you the branch in which you are currently working on.
 - If you configured Git to display its output in color, the current local branch will be displayed in green, the local non-current branches will be displayed in white, and the remote branches will be displayed in red.
 
-### Incorporate Changes to the Local Repo
+### Incorporate Changes to the Local Repo <a name="git-pull"></a>
 When collaborating with other people, they will make changes to the files and push them to the remote repo, so the remote repo will frequently be ahead of your local repo. Let's say everyone in the team has access to the `<parent>` branch and you created a branch off the `<parent>` branch called `<branchname>`. Periodically, you would like to incorporate the latest version of the `<parent>` branch in the remote repo *into* your local branch `<branchname>` to ensure there are no conflicts with the changes you are making.
 ```bash
 $ git checkout <parent>		# Switch to the local <parent> branch
@@ -250,7 +266,7 @@ $ git merge <parent>		# Incorporate the changes in <parent> into the current bra
 - If you want to merge the changes in `<branchname>` into the `<parent>`: `git checkout <parent>`, `git merge <branchname>`.
 - If there are conflicts, they will be indicated in the respective file with `<<<` as delimiters. Your changes are marked as HEAD. Manually resolve any conflicts and delete all the delimiters. Add the file back (`git add .`) and finish the merge (`git merge --continue`). To abort the merge use: `git merge --abort`.
 
-### Upload Changes to the Remote Repo
+### Upload Changes to the Remote Repo <a name="git-push"></a>
 To upload the commits you made in the local branch `<branchname>` to the remote branch `<branchname>`:
 ```bash
 $ git checkout <branchname>	# In case you are not already in branch <branchname>, switch to it
@@ -262,8 +278,7 @@ $ git push	   		# Upload the current branch (<branchname>) to the associated ups
 - The `git push` command pushes [just the current branch](https://stackoverflow.com/questions/820178/how-do-you-push-just-a-single-git-branch-and-no-other-branches), not other branches nor the `<parent>` branch. If, for every branch that exists on the local side, you want the remote side to be updated (as long as a branch of the same name already exists on the remote side) use: `git push origin :` or `git push origin +:` (for non-fast-forward updates).
 - When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. Notice that it is usually a bad idea to merge your own pull requests when working in a team.
 
-### Delete Branches
-
+### Merge and Delete Branches <a name="delete"></a>
 Once it has been merged to its upstream branch, the branch `<branchname>` can be safely deleted.
 
 To delete a **local** branch (which has already been fully merged to its upstream branch) from the terminal:
@@ -305,7 +320,7 @@ Only delete temporary branches (`ftr` and `fix`), not permanent branches (`dev`)
 
 
 
-## Driessen's Branching Model
+## A Branching Model for A Research Project <a name="branching-model"></a>
 Use meaningful branch names. 
 - [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow. 
 - [Link](https://nvie.com/posts/a-successful-git-branching-model/) explaining a successful Git branching model.
