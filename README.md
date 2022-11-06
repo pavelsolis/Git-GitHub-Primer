@@ -22,6 +22,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 3. [Create Repositories](#repositories)
 	1. [Creating a Repository in GitHub](#repo-github)
 5. [Regular Git Workflow](#regular-workflow)
+	1. [Commit Changes](#git-commit)
 	1. [See Changes Before Committing](#git-diff)
 	1. [See History of Commits](#git-log)
 	1. [Discard Unwanted Changes](#git-restore)
@@ -32,6 +33,8 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 	1. [Upload Changes to the Remote Repo](#git-push)
 	1. [Merge and Delete Branches](#delete)
 9. [A Branching Model for Research](#branching-model)
+	1. [Naming Conventions](#naming)
+	1. [Implementation of the Branching Model](#implementation)
 
 ## Setting Up Git <a name="setting-up"></a>
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
@@ -150,14 +153,15 @@ Notes:
 ## Regular Git Workflow: Track Changes <a name="regular-workflow"></a>
 When you modify files in a project, you don't want to keep a record of every little change you do. You want to make changes, go back and forth, and once you are happy with the new version (i.e. no mistakes in code, no compilation errors, consistent output), you register (or commit) the changes.
 
-It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git differences between new and modified files: new files are 'untracked' and modified files are 'unstaged'.
-
 Git works by saving changes, not entire files. To track a timeline of edits, Git uses three internal state management systems, known as *trees*.
 - The **working directory** tracks the immediate changes to the content of files and directories.
 - The **index** is the staging area for Git to keep track of the changes in the working directory ready to be committed.
 - The **commit history** is a permanent record of the changes. In this tree, HEAD is the name of the *last* commit in the current branch.
 
-The workflow described above can be implemented with the `status`, `add`, `reset` and `commit` commands as follows:
+### Commit Changes <a name="git-commit"></a>
+It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git differences between new and modified files: new files are 'untracked' and modified files are 'unstaged'.
+
+The workflow just described can be implemented with the `status`, `add`, `reset` and `commit` commands as follows:
 ```bash
 $ git status 					# Show pending changes to the trees in your local machine
 
@@ -282,7 +286,7 @@ After the changes for which the temporary branch `<branchname>` was created have
 ```bash
 $ git checkout <parent>				# Switch to the branch that will import the changes
 $ git pull					# Pull before push to have the latest version of the <parent> branch
-$ git merge --no-ff <branchname>		# Merge <branchname> to <parent> without a fast-forward
+$ git merge --no-ff <branchname>		# Merge changes in <branchname> to <parent> without a fast-forward
 $ git branch -d <branchname>			# Delete the local branch
 $ git push origin --delete <branch_name>	# Delete the remote-tracking branch
 ```
@@ -313,9 +317,23 @@ $ git pull -p
 
 
 ## A Branching Model for Research <a name="branching-model"></a>
+This section implements the following [git-flow branching model](https://nvie.com/posts/a-successful-git-branching-model/) of Vincent Driessen for a research project.
+```bash
+$ git checkout -b <branchname> <parent>	# Create a branch <branchname> off the <parent> branch and switch to it
+
+$ git commit -am "Your message"		# Commit changes
+
+$ git checkout <parent>
+$ git merge --no-ff <branchname>	# Merge changes in <branchname> to <parent> without a fast-forward
+
+$ git push origin <parent>		# Push changes to the server
+$ git push origin <branchname>
+$ git branch -d <branchname>		# Remove local and remote branches
+$ git push origin --delete <branchname>
+```
+
+### Naming Conventions <a name="naming"></a>
 Use meaningful branch names. 
-- [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow. 
-- [Link](https://nvie.com/posts/a-successful-git-branching-model/) explaining a successful Git branching model.
 
 Based on the previous two sources, I will use a forward slash separator and the following branching categories and rules: 
 - `dev` branch off from `main` and merge back into `main`. It is a permanent branch.
@@ -333,23 +351,10 @@ Since `dev` is a permanent branch and `fix` branches are mainly used to correct 
 - Therefore, there are in total 17 possible types of temporary branches: 15 feautre branches (12 regular, 3 for tests), 2 fix branches.
 - With this convention (names *and* forward slashes), no feature branch can have the following names: `ftr/cat` (e.g. `data/raw`,`code/ans`), `fix/dev`, `fix/mst`. That is, their names need to include the `/feature-name` part (see first link above).
 
-### Driessen's Model Adapted To A Research Project
-[Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch) of Driessen's branching model to a research project:
-```bash
-$ git checkout -b <branchname> <parent>	# Create a new branch **off** the `<parent>` branch *and* go to the new branch
-					# Same as: git checkout <parent>, git branch <branchname>, git checkout <branchname>
+- [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow. 
 
-$ git commit -am "Your message"		# Commit changes
 
-$ git checkout <parent>
-$ git merge --no-ff <branchname>	# Merge your changes to <parent> without a fast-forward
-
-$ git push origin <parent>		# Push changes to the server
-$ git push origin <branchname>
-$ git branch -d <branchname>		# Optional: remove local and remote branches
-$ git push origin --delete <branchname>
-```
-
+### Implementation of the Branching Model <a name="implementation"></a>
 Implementation following the naming conventions:
 ```bash
 # Develop branch
@@ -415,6 +420,12 @@ $ git push origin fix/dev/name
 $ git branch -d fix/xxx/name		# Optional: remove local and remote branches
 $ git push origin --delete fix/xxx/name
 ```
+
+<!---
+[Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
+-->
+
+
 
 ## Collaborating with Git (need work)
 
