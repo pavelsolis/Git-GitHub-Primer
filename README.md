@@ -31,7 +31,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 	1. [Incorporate Changes to the Local Repo](#git-pull)
 	1. [Upload Changes to the Remote Repo](#git-push)
 	1. [Merge and Delete Branches](#delete)
-9. [Branching Model for Research](#branching-model)
+9. [A Branching Model for Research](#branching-model)
 
 ## Setting Up Git <a name="setting-up"></a>
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
@@ -223,10 +223,7 @@ $ git stash		# Discard all local changes, but save them for possible re-use late
 ## Refined Git Workflow: Branching and Merging <a name="refined-workflow"></a>
 **Branches** are the most powerful part of Git. They allow to trying things out. By isolating features into separate branches, everybody can work independently and, when necessary, share the changes with other developers. Git encourages workflows that branch and merge often, even multiple times in a day.
 
-All branches in the remote repo will hang from the remote URL *origin*, that is why it is important to have a branching model to distinguish between permanent (`main`, `development`) and temporary (`feature`, `fixes`) branches. A branching model describes a structure, naming conventions, rules for branching off and merging to. Since October 2020, any new repository is created with the default branch `main`. 
-
-**CAUTION**: Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch Git will update the files in the repository to match the version to which you are moving to. If you introduce changes in one branch and suddenly realized that it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch:
-- If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch. Alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
+Any new repository is created with a default branch called `main`, additional branches need to be created. All branches in the remote repo will hang from the remote URL *origin*, that is why it is important to have a branching model to distinguish between permanent and temporary branches. A branching model describes a structure, naming conventions, rules for branching off and merging to other branches. The next section describes a branching model for a research project.
 
 ### Create a Branch <a name="git-branch"></a>
 When you create a new branch **off** the *current* branch, you can make changes to files while you are in the the new branch without affecting the version of the files that you see when you move to the original or parent branch. You can implement this process with the `branch` and `checkout` commands as follows:
@@ -242,6 +239,8 @@ $ git push -u origin <branchname>	# Set upstream for branch <branchname> (for pu
 $ git checkout -t origin/<branchname>	# Create <branchname>, switch to it and track (for push and pull) its remote branch
 ```
 - Once in the new branch, you can modify files, add and commit as many edits as necessary with `git add` and `git commit`.
+- Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch, Git will update the files in the repository to match the version to which you are moving to.
+- If you introduce changes in one branch and suddenly realized that it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch. If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch. Alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 - For an explanation of the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch, see [here](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch).
 
 To see the available branches:
@@ -279,36 +278,19 @@ $ git push	   		# Upload the current branch (<branchname>) to the associated ups
 - When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. Notice that it is usually a bad idea to merge your own pull requests when working in a team.
 
 ### Merge and Delete Branches <a name="delete"></a>
-Once it has been merged to its upstream branch, the branch `<branchname>` can be safely deleted.
-
-To delete a **local** branch (which has already been fully merged to its upstream branch) from the terminal:
+After the changes for which the temporary branch `<branchname>` was created have been made, you want to incorporate (or merge) those changes into its upstream branch. Once the merge is done, `<branchname>` can be safely deleted locally and remotely.
 ```bash
-$ git branch -d <branchname>
+$ git checkout <parent>				# Switch to the branch that will import the changes
+$ git pull					# Pull before push to have the latest version of the <parent> branch
+$ git merge --no-ff <branchname>		# Merge <branchname> to <parent> without a fast-forward
+$ git branch -d <branchname>			# Delete the local branch
+$ git push origin --delete <branch_name>	# Delete the remote-tracking branch
 ```
-To delete a **remote** branch from the terminal ([link](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-both-locally-and-remotely), [link](https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a)):
-```bash
-$ git branch -d -r origin/<branch_name>		# Remove a particular remote-tracking branch
-# OR
-$ git push origin --delete <branch_name>
-# OR
-$ git push origin :<remote_branch_name>
-```
+- To delete a branch in GitHub, click on the 'branches' tab at the top of the project's contents and click the trash button nex to the name of the branch, but beware that it will still show up with `git branch -a`.
 
-To delete a branch **in GitHub**:
-- After a pull request has been approved and merged, you can delete a branch by clicking the grey button 'Delete branch'. 
-- If you merge a branch locally and then deleted it from the terminal, to delete it in GitHub click on the 'branches' tab at the top of the project's contents and click the trash button nex to the name of the branch.
-
-When you delete branches in GitHub, they will still show up in the terminal with `git branch -a`. Also, after deleting the local branch (with `git branch -d <branchname>`) and the remote branch (with `git push origin --delete <branchname>`) other machines may still have "obsolete tracking branches". To remove all such [stale](https://makandracards.com/makandra/6739-git-remove-information-on-branches-that-were-deleted-on-origin) branches locally:
+After deleting the local and remote branches, other machines may still have "obsolete tracking branches". To propagate the removal of remote branches in those other machines, they need to remove all such [stale](https://makandracards.com/makandra/6739-git-remove-information-on-branches-that-were-deleted-on-origin) branches locally:
 ```bash
-$ git remote prune origin
-# OR
-$ git fetch --prune
-# OR
-$ git fetch --all --prune		# In other machines after deleting remote branches to propagate changes
-# OR
-$ git fetch -p				# Prune remote branches
-# OR
-$ git pull -p
+$ git fetch --all --prune
 ```
 
 <!---
@@ -316,11 +298,21 @@ In case you needed, you can rename an existing repository default branch from `m
 
 $ git checkout -b <branchname> origin/<branchname> # Same as previous but local and tracking branches can have different names
 Only delete temporary branches (`ftr` and `fix`), not permanent branches (`dev`).
+
+To delete a **remote** branch from the terminal ([link](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-both-locally-and-remotely), [link](https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a)):
+$ git branch -d -r origin/<branch_name>		# Remove a particular remote-tracking branch
+
+$ git remote prune origin
+$ git fetch --prune
+$ git fetch -p				# Prune remote branches
+$ git pull -p
+
+(`main`, `development`) (`feature`, `fixes`) 
 -->
 
 
 
-## A Branching Model for A Research Project <a name="branching-model"></a>
+## A Branching Model for Research <a name="branching-model"></a>
 Use meaningful branch names. 
 - [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow. 
 - [Link](https://nvie.com/posts/a-successful-git-branching-model/) explaining a successful Git branching model.
