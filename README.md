@@ -18,23 +18,23 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 
 ## Contents
 1. [Setting Up Git](#setting-up)
-	1. [Accesing Remote Repositories](#remote-repos)
+	1. [Access GitHub from Git](#access-github)
 3. [Create Repositories](#repositories)
 	1. [Creating a Repository in GitHub](#repo-github)
-5. [Regular Git Workflow](#regular-workflow)
+5. [Regular Git Workflow: Tracking Changes](#regular-workflow)
 	1. [Commit Changes](#git-commit)
 	1. [See Changes Before Committing](#git-diff)
 	1. [See History of Commits](#git-log)
 	1. [Discard Unwanted Changes](#git-restore)
 	1. [Uncommit Changes](#git-reset)
-7. [Refined Git Workflow](#refined-workflow)
+7. [Refined Git Workflow: Branching and Merging](#refined-workflow)
 	1. [Create a Branch](#git-branch)
 	1. [Incorporate Changes to the Local Repo](#git-pull)
 	1. [Upload Changes to the Remote Repo](#git-push)
 	1. [Merge and Delete Branches](#delete)
 9. [A Branching Model for Research](#branching-model)
 	1. [Naming Conventions](#naming)
-	1. [Implementation of the Branching Model](#implementation)
+	1. [Implementation of the Model](#implementation)
 
 ## Setting Up Git <a name="setting-up"></a>
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
@@ -71,7 +71,7 @@ $ git config --global rebase.autoStash true
 To check the configuration settings, type `git config --list`. For more on setting up Git see [here](https://help.github.com/en/articles/set-up-git).
 
 
-### Accesing Remote Repositories <a name="remote-repos"></a>
+### Access GitHub from Git <a name="access-github"></a>
 To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
@@ -150,7 +150,7 @@ Notes:
 - If at some point you want to rename a repository, you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
 
 
-## Regular Git Workflow: Track Changes <a name="regular-workflow"></a>
+## Regular Git Workflow: Tracking Changes <a name="regular-workflow"></a>
 When you modify files in a project, you don't want to keep a record of every little change you do. You want to make changes, go back and forth, and once you are happy with the new version (i.e. no mistakes in code, no compilation errors, consistent output), you register (or commit) the changes.
 
 Git works by saving changes, not entire files. To track a timeline of edits, Git uses three internal state management systems, known as *trees*.
@@ -333,30 +333,25 @@ $ git push origin --delete <branchname>
 ```
 
 ### Naming Conventions <a name="naming"></a>
-Branch names have the following structure: category/type/type-name. Notice that a forward slash separates the tokens.
+The model uses two permanent branches.
+- The `main` branch is the default branch for any new repository.
+- The development or `dev` branch needs to be created, it branches off from `main` and merges back into `main`.
 
-The branching categories are: 
-- `dev` branch off from `main` and merge back into `main`. It is a permanent branch.
-- `ftr` branch off from `dev` and merge back into `dev`. It is a temporary branch.
-- `fix` branch off from `main` or `dev` and merge back into `main` or `dev`. It is a temporary branch.
+Temporary branches have two *categories*:
+- Amend or `fix` branches, which branch off from `main` or `dev` and merge back into `main` or `dev`. The two *types* of `fix` branches are thus `mai` and `dev`.
+- Feature or `ftr` branches, which branch off from `dev` and merge back into `dev`. These are the most frequently used branches. They can be of three *types*:
+	- `data` branches deal with raw or analytic data, so this token will be followed by `raw` and `ans`.
+	- `code` branches deal with tidying or analyzing the data, so this token will be followed by `tdy` and `ans`.
+	- `docs` branches deal with issues regarding the paper, the slides or both (e.g. equations, figures, tables), so this token will be followed by `ppr`, `sld` and `mix`.
 
-Most of the branches that will be used are feature `ftr` branches because `dev` is a permanent branch and `fix` branches are mainly used to correct bugs found in the `dev` or `main` branches (e.g. due to a recent merge from the `dev` branch).
-
-The naming conventions to distinguish the temporary (feature and fix) branches are:
-- Feature `ftr` branches can be of three types:
-	- `data` branches deal with raw or analytic data, so this token will be followed by: `raw` and `ans`.
-	- `code` branches deal with tidying or analyzing the data, so this token will be followed by: `tdy` and `ans`.
-	- `docs` branches deal with issues in the paper, slides, equations, figures, tables, references or settings so this token will be followed by: `ppr`, `sld`, `eqn`, `fig`, `tbl`, `ref` and `set`.
-- All three of the different types of feature branches can be used for experimenting or testing minor things unrelated to the previous categories, in which case any of the three types will be followed by: `tst`.
-- **Examples**: `data/raw/feature-name`, `code/ans/feature-name`, `docs/eqn/feature-name`, `fix/dev/feature-name`, `code/tst/feature-name`, `docs/tst/feature-name`.
-- Therefore, there are in total 17 possible types of temporary branches: 14 feautre branches (11 regular, 3 for tests), 2 fix branches.
-- To distinguish a `fix` branched off from `main` or `dev` branches, the names of `fix` branches will begin with: `fix/mst` or `fix/dev`.
-- With this convention (names *and* forward slashes), no feature branch can have the following names: `ftr/cat` (e.g. `data/raw`,`code/ans`), `fix/dev`, `fix/mst`. That is, their names need to include the `/feature-name` part (see first link above).
-
-- [Link](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) for useful naming conventions that facilitate the workflow.
+Temporary branch names have the following structure: **category/type/task**.
+- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans`, `fix/mai`, `docs/mix/figure 5`. The first two do not include a task name and the last one includes a space in the name.
+- Temporary branch name examples: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
+- This structure follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
+- [This](https://github.com/pavelsolis/Replication-Folder) repository template (a folder structure that facilitates the reproducibility of research results) follows these naming conventions.
 
 
-### Implementation of the Branching Model <a name="implementation"></a>
+### Implementation of the Model <a name="implementation"></a>
 Implementation following the naming conventions:
 ```bash
 # Develop branch
@@ -426,7 +421,13 @@ $ git push origin --delete fix/xxx/name
 <!---
 [Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
 Use meaningful branch names.
+Notice that a forward slash separates the tokens.
 take any of three tokens
+- All three of the different types of feature branches can be used for experimenting or testing minor things unrelated to the previous categories, in which case any of the three types will be followed by: `tst`.
+because `dev` is a permanent branch and `fix` branches are aimed to correct bugs in `dev` or `main` (e.g. due to a recent merge from the `dev` branch). 
+In sum, there are in total 13 possible types of temporary branches: 11 feautre branches and 2 fix branches.
+That is, their names need to include the `/feature-name` part (see first link above).
+`docs` branches deal with issues regarding the paper, slides, equations, figures, tables, references or settings so this token will be followed by `ppr`, `sld`, `eqn`, `fig`, `tbl`, `ref` and `set`.
 -->
 
 
