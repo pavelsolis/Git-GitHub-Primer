@@ -19,8 +19,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 ## Contents
 1. [Setting Up Git](#setting-up)
 	1. [Accessing GitHub from Git](#access-github)
-3. [Create Repositories](#repositories)
-	1. [Creating a Repository in GitHub](#repo-github)
+3. [Create a Repository](#repositories)
 5. [Regular Git Workflow: Tracking Changes](#regular-workflow)
 	1. [Commit Changes](#git-commit)
 	1. [See Changes Before Committing](#git-diff)
@@ -35,6 +34,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 9. [A Branching Model for Research](#branching-model)
 	1. [Naming Conventions](#naming)
 	1. [Implementation of the Model](#implementation)
+1. [Annotations](#annotations)
 
 ## Setting Up Git <a name="setting-up"></a>
 Compare your current version of Git with the [latest release](https://git-scm.com/downloads) by typing:
@@ -127,31 +127,32 @@ $ git remote set-url origin git@github.com:USERNAME/REPOSITORY.git	# Switch from
 ```
 
 
-## Create Repositories <a name="repositories"></a>
+## Create a Repository <a name="repositories"></a>
 You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
 
-You can create a Git repository from the terminal with `git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine. 
+You can create a repository in github.com by clicking the plus sign at the top right corner and choosing 'New Repository'. Type a name for the repository (with no spaces) and choose whether you want the repository to be private or public.
+It is recommended to include a README file, a license file and a GitHub-hosted *.gitignore* file. The *.gitignore* file includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX, and modify it to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
 
-### Creating a Repository in GitHub <a name="repo-github"></a>
-In github.com click the plus sign at the top right corner and choose 'New Repository' or under the 'Repositories' tab select 'New'. Choose a name for the repository (with no spaces). Choose whether you want the repository to be private or public, and whether you want to initialize it with a README file (recommended). Also, it is recommended to include a GitHub-hosted *.gitignore* file, which includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX. The *.gitignore* file can later be modified to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
-- Make sure to create the *.gitignore* file before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `git rm --cached <filename.ext>`.
-- You can place the *.gitignore* file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
-- It might be a good idea to include Excel files (.xls*) in the *.gitignore* file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
-
-Once you created a repository in GitHub, click on 'Code' and copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to clone when setting up Git above, either HTTPS or SSH.
-
-Use the `cd` command to go to the folder where you want to set the repository and paste the URL as follows:
+Once you created a repository in GitHub, click on 'Code' and copy the URL link that GitHub creates in order to clone the repository in your machine. You need the appropriate URL depending on how you decided to access GitHub when setting up Git above, either HTTPS or SSH. Use the `cd` command to go to the folder where you want to set the repository and paste the URL as follows:
 ```bash
 $ cd <path/to/folder>
 $ git clone <URL>
 ```
-This initializes a folder as a Git repository in your machine. You can now make changes to your project either in github.com or in your local machine.
-- To pull down from github.com the most recent version of the project to your machine, type `git pull`.
-- To upload changes made to files in your local machine, commit the changes and push them to the remote. See below.
-
-Notes:
+This initializes a folder as a Git repository in your machine. You can now make changes to your project, either in github.com or in your local machine. See below for how to pull down from github.com the most recent version of the project to your machine, and how to upload changes made to files in your local machine to github.com.
+- You can also create a local repo from the terminal. Go to the desired folder using `cd` and type `git init`. Then, you need to type `git push -u origin main` in your first push to upstream the local repo to a remote (empty) repo. This creates an upstream branch `main` *and* sets `origin/main` as a remote-tracking branch (i.e. the local branch `main` will be pushed to the upstream branch (origin) `main`).
+- Avoid keeping your local repo in the Dropbox folder: there is a chance of conflicts between the syncing of Dropbox and GitHub, and the space limit in Dropbox might be an issue when the project's size grows.
 - Git does not include empty folders in updates to remote repositories in GitHub. To make Git to recognize such folders, the non-official convention is to put a *.gitkeep* file in them. For this, move to the empty folder with `cd` and type `touch .gitkeep`.
-- If at some point you want to rename a repository, you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
+- Regarding the *.gitignore* file:
+	- Make sure to create it before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `git rm --cached <filename.ext>`.
+	- It might be a good idea to include Excel files (.xls*) in the file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
+	- You can place the file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
+- If at some point you want to [rename a repository](https://help.github.com/en/articles/renaming-a-repository), you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
+
+<!---
+You can create a local repo from the terminal with `git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine.
+or under the 'Repositories' tab select 'New'.
+include a license file (or at least explicitly claim copyright by including: Copyright [yyyy] [name of copyright owner]) 
+-->
 
 
 ## Regular Git Workflow: Tracking Changes <a name="regular-workflow"></a>
@@ -183,6 +184,7 @@ $ git push					# Sync up the changes made locally with the remote repository
 - Always run tests and review changes *before* committing. Only commit working versions of code.
 - Make 'small' frequent commits rather than big infrequent commits.
 - Commit messages should be short (< 72 characters). For good practices on writing good commit messages, see [1](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53), [2](https://chris.beams.io/posts/git-commit/) and [3](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/).
+- If you opened up a string with an odd number of `'` characters when making a commit, you can exit the prompt `>` and go back to the normal bash prompt, by typing `'` again and hit `Return` to close the string. [Alternatively](https://stackoverflow.com/questions/26228848/how-do-i-exit-my-git-commit-message-im-not-in-the-vim-i-used-the-commit-m), you can press `ctrl` + `c`.
 - If you run `git commit` without a message or option, your default text editor will open up in the screen of your terminal and you can write a multi-line message. **In a Mac**, if the Vi editor opens in command mode, press `i` (to switch to insert or edit mode) and start writing your comment. When you finish writing your message, sequentially press `Esc` + `:wq` + `Enter`, where `Esc` exits the insert mode, `:` enters the command mode, `w` writes and saves the commit message, `q` exits the editor (see [here](https://apple.stackexchange.com/questions/252541/how-do-i-escape-the-git-commit-window-from-os-x-terminal)). To change your default editor (e.g. to vim, nano, emacs), type `git config --global core.editor nano`. The difference between vim and nano is that vim is modal and nano is not. So with vim you are constantly changing between command mode and edit mode, whereas in nano, as in emacs, you are in one mode and your commands use special key combinations.
 
 ### See Changes Before Committing <a name="git-diff"></a>
@@ -196,16 +198,16 @@ $ git diff HEAD <filename.ext>		# Show changes since the last commit (i.e. chang
 ```
 - It'll work recursively on directories. If no path or file are given, `git diff` shows the changes in all files.
 
-
 ### See History of Commits <a name="git-log"></a>
 See a list of previous commits:
 ```bash
-$ git log				# Shows the sequence of commits in the current branch
-$ git reflog				# Shows the sequence of actions in the repository
+$ git log				# Show sequence of local commits in current branch
+$ git log HEAD..origin/<brachname>	# Show sequence of remote commits in current branch
+$ git reflog				# Show sequence of actions in the repository
 ```
 
 ### Discard Unwanted Changes <a name="git-restore"></a>
-You can discard unwanted changes to a file permanently *before* they are staged (**Warning**: It erases any unsaved work!):
+You can discard *unwanted* changes to a file permanently before they are staged (**Warning**: It erases any unsaved work!):
 ```bash
 $ git restore <filename.ext>		# For a specific file
 $ git restore .				# For all unstaged files in the working directory
@@ -216,8 +218,13 @@ To move incomplete or wrongly committed files back to the staging area from the 
 ```bash
 $ git reset --soft HEAD^
 ```
-If you also did a `git push`, see [this](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
+- If you also did a `git push`, see [this](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
+- **Warning**: `git reset` also has the option `--hard`, which can be used to rewrite history and to throw out commits that you no longer want.
 
+To check out files from a previous commit (to reverse changes):
+```bash
+$ git checkout COMMIT_IDENTIFIER -- file1, file2
+```
 
 <!---
 - `--cached` does not affect the working directory because it works directly in the index.
@@ -271,7 +278,7 @@ $ git merge <parent>		# Incorporate the changes in <parent> into the current bra
 - Always **commit before** pushing or pulling because if there are conflicts, Git reconstructs using the commits.
 - Always **pull before** you push so that the local and the remote repositories are in sync.
 - If you want to merge the changes in `<branchname>` into the `<parent>`: `git checkout <parent>`, `git merge <branchname>`.
-- If there are conflicts, they will be indicated in the respective file with `<<<` as delimiters. Your changes are marked as HEAD. Manually resolve any conflicts and delete all the delimiters. Add the file back (`git add .`) and finish the merge (`git merge --continue`). To abort the merge use: `git merge --abort`.
+- If there are conflicts, they will be indicated in the respective file with `<<<` as delimiters. Your changes are marked as HEAD. Manually resolve any conflicts and delete all the delimiters. Add the file back (`git add .`) and finish the merge (`git merge --continue`). To abort the merge use: `git merge --abort`. For more on how to resolve merge conflicts, see [this](https://www.simplilearn.com/tutorials/git-tutorial/merge-conflicts-in-git).
 
 ### Upload Changes to the Remote Repo <a name="git-push"></a>
 To upload the commits you made in the local branch `<branchname>` to the remote branch `<branchname>`:
@@ -279,7 +286,7 @@ To upload the commits you made in the local branch `<branchname>` to the remote 
 $ git checkout <branchname>	# In case you are not already in branch <branchname>, switch to it
 $ git push	   		# Upload the current branch (<branchname>) to the associated upstream
 ```
-- A longer syntax of the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name.
+- A longer syntax of the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name. Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote-tracking branch on the upstream. See [here](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) for an explanation.
 - For `git push` to work, you must have associated an upstream for <branchname> when you created it (see `git push -u` or `git checkout -t` above).
 - Note that you need to switch to `<branchname>` before pushing. If you are on `<parent>` and type (1) `git push`, Git will push the `<parent>` not `<branchname>`, or (2) `git push origin <branchname>`, Git will try to push the local `<parent>` branch (being the *current* branch) to the remote `<branchname>`, which would be incorrect. If you are in `<parent>` and you don't want to checkout to `<branchname>`, you can use: `git push origin <branchname>:<branchname>`.
 - The `git push` command pushes [just the current branch](https://stackoverflow.com/questions/820178/how-do-you-push-just-a-single-git-branch-and-no-other-branches), not other branches nor the `<parent>` branch. If, for every branch that exists on the local side, you want the remote side to be updated (as long as a branch of the same name already exists on the remote side) use: `git push origin :` or `git push origin +:` (for non-fast-forward updates).
@@ -449,56 +456,32 @@ $ git push origin --delete fix/xxx/name
 [Set an upstream when the current branch is behind the remote branch](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch)
 
 
-## Details
+## Annotations <a name="annotations"></a>
 - A **ref** is anything pointing to a commit (e.g. branches (heads), tags, and remote branches), they are stored in the .git/refs directory (e.g. `refs/heads/main`, `refs/remotes/main`, `refs/tags`). For example, `refs/heads/0.58` specifies a branch named `0.58`; if you don't specify what namespace the ref is in, Git will look in the default ones, so using only `0.58` is ambiguous (there could have both a `branch` and a `tag` named `0.58`).
 - When an update changes a branch (or more in general, a ref) that used to point at commit A to point at another commit B, it is called a **fast-forward** update if and only if B is a descendant of A. Hence a fast-forward update from A to B does not lose any history.
-- To check out files from a previous commit (to reverse changes): `git checkout COMMIT_IDENTIFIER -- file1, file2`.
-- Warning: `git reset` have options `--hard` and `--soft` that can be used to rewrite history and to throw out commits that you no longer want.
-- If you use `git init` to create a local repository, and then want to upstream it to a remote (empty) repo, in your first push you need to use: `git push -u origin main`. This will create an upstream `main` branch on the upstream (`git push origin main`) *and* will record `origin/main` as a remote tracking branch so that the local branch `main` will be pushed to the upstream (origin) `main` (upstream branch). Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote tracking branch on the upstream. [Link](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) for an explanation.
 - [Why do I have to `git push --set-upstream origin <branch>`?](https://stackoverflow.com/questions/37770467/why-do-i-have-to-git-push-set-upstream-origin-branch)
-- Reasons for not keeping the repository in Dropbox: there is a chance of conflicts between the syncing of Dropbox and GitHub, and the space limit in Dropbox might be an issue when the project grows in size.
-- Reasons for having a project for each chapter: GitHub has a limit of 1 GB per project and has limits of 100MB per file, keeping them separate minimizes these issues.
-- To understand GitHub from scratch: Healey (intuitively explains Git workflow); Youtube videos by Learn Code show the basic workflow; Pinter (2019) explains benefits and gives recommendations; Sviatoslav (2017); Notes by Fernández-Villaverde complement/reinforce the previous one; StackExchange links for clarification, reinforcement and understanding the daily workflow.
-- It is recommended to include a license file in your repositories, or at least explicitly claim copyright by including: Copyright [yyyy] [name of copyright owner].
 - [Working with large files](https://help.github.com/en/articles/working-with-large-files)
 - [Ignoring files](https://help.github.com/en/articles/ignoring-files)
-- [Rename a repository](https://help.github.com/en/articles/renaming-a-repository)
 - [Relocate a local repo](https://stackoverflow.com/questions/11384928/change-git-repository-directory-location)
-
-## Solving Issues
-See history of local commits
+- GitHub recomends a limit of 1 GB per project and blocks files larger than 100 MB, and it will send a warning in the terminal for each file of over 50MB. You can remove a big file [wrongly committed](https://thomas-cokelaer.info/blog/2018/02/git-how-to-remove-a-big-file-wrongly-committed/), but it may cause the local and remote branches to diverge (see [this](https://stackoverflow.com/questions/2452226/master-branch-and-origin-master-have-diverged-how-to-undiverge-branches) and [this](http://serebrov.github.io/html/2012-02-13-git-branches-have-diverged.html)).
 ```bash
-$ git log
-```
-
-See history of remote commits
-```bash
-$ git log HEAD..origin/brach_name
-```
-
-To remove a big file [wrongly committed](https://thomas-cokelaer.info/blog/2018/02/git-how-to-remove-a-big-file-wrongly-committed/)
-```bash
-$ git filter-branch --tree-filter 'rm -rf Codes/Pre-Analysis/struct_data.mat' HEAD
+$ git filter-branch --tree-filter 'rm -rf path/to/filename.ext' HEAD
 $ git push
+
+$ git rebase origin/<branchname>
 ```
 
-It may cause the local and remote branches to diverge, in which case (see [this](https://stackoverflow.com/questions/2452226/master-branch-and-origin-master-have-diverged-how-to-undiverge-branches) and [this](http://serebrov.github.io/html/2012-02-13-git-branches-have-diverged.html))
-```bash
-$ git rebase origin/code/ans/fit-models
-```
+- To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin). 
 
-To exit the prompt `>` (e.g. if you opened up a string with the odd number of `'` characters when making a commit) and go back to your normal bash prompt, [use](https://stackoverflow.com/questions/26228848/how-do-i-exit-my-git-commit-message-im-not-in-the-vim-i-used-the-commit-m) `ctrl` + `c` or close the string by typing `'` again.
-
-If `git push` displays the following (due to a git-lfs hook):
+- If `git push` displays the following (due to a git-lfs hook):
 ```bash
 This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/pre-push.
 
-error: failed to push some refs to 'github.com:pavelsolis/Ch_MPS.git'
+error: failed to push some refs to 'github.com:USERNAME/REPOSITORY.git'
 ```
-What [works](https://github.com/git-lfs/git-lfs/issues/333) is to remove the folder `.git/lfs` and the file `.git/hooks/pre-push`.
+You [may try to remove](https://github.com/git-lfs/git-lfs/issues/333) the folder `.git/lfs` and the file `.git/hooks/pre-push`.
 
+<!---
 Only push into [bare repositories](https://stackoverflow.com/questions/1298499/git-push-not-send-changes-to-remote-git-repository).
-
-To resolve merge conflicts, see [this](https://www.simplilearn.com/tutorials/git-tutorial/merge-conflicts-in-git).
-
-To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin). 
+- To understand GitHub from scratch: Healey (intuitively explains Git workflow); Youtube videos by Learn Code show the basic workflow; Pinter (2019) explains benefits and gives recommendations; Sviatoslav (2017); Notes by Fernández-Villaverde complement/reinforce the previous one; StackExchange links for clarification, reinforcement and understanding the daily workflow.
+-->
