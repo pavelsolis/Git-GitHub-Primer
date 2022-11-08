@@ -18,7 +18,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 
 ## Contents
 1. [Setting Up Git](#setting-up)
-	1. [Access GitHub from Git](#access-github)
+	1. [Accessing GitHub from Git](#access-github)
 3. [Create Repositories](#repositories)
 	1. [Creating a Repository in GitHub](#repo-github)
 5. [Regular Git Workflow: Tracking Changes](#regular-workflow)
@@ -71,33 +71,30 @@ $ git config --global rebase.autoStash true
 To check the configuration settings, type `git config --list`. For more on setting up Git see [here](https://help.github.com/en/articles/set-up-git).
 
 
-### Access GitHub from Git <a name="access-github"></a>
+### Accessing GitHub from Git <a name="access-github"></a>
 To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
 
 #### HTTPS
-If you decide to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. You need Git 1.7.10 or newer to use the osxkeychain credential helper.
+If you want to use HTTPS with GitHub, you can use a [credential helper](https://cfss.uchicago.edu/setup/git-cache-credentials/) to tell Git to remember your credentials. You need Git 1.7.10 or newer to use the osxkeychain credential helper.
 
 - Find out if the credential helper is already installed. In the terminal, type:
 ```bash
 $ git credential-osxkeychain
-```
-You should see something like this:
-```bash
 > usage: git credential-osxkeychain <get|store|erase>
 ```
-Otherwise, follow step 2 on the [GitHub help page](https://docs.github.com/en/github/getting-started-with-github/caching-your-github-credentials-in-git#platform-mac).
+If you don't see the second line, follow step 2 on the [GitHub help page](https://docs.github.com/en/github/getting-started-with-github/caching-your-github-credentials-in-git#platform-mac).
 
 - Tell Git to use the osxkeychain helper using the global credential.helper config:
 ```bash
 $ git config --global credential.helper osxkeychain
 ```
 
-- After this, the next time you try to clone, pull, push, etc. using the terminal, it will ask you to authenticate (only once). [Since 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/), authetication in GitHub uses a personal access token or [PAT](https://github.com/settings/tokens) instead of a password. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. Once you have a token, enter it instead of your password to perform Git operations over HTTPS.
+- After this, the next time you try to clone, pull, push, etc. from the terminal, it will ask you to authenticate (only once). [Since 2019](https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/), authetication in GitHub uses a [personal access token](https://github.com/settings/tokens) (PAT) instead of a password. So, you need to [create](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) a PAT for the command line. Once you have a token, enter it instead of your password to perform Git operations over HTTPS.
 
-You can [update your GitHub access credentials](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials). When you change your username, password, or personal access token on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
+[Update your GitHub access credentials](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials): When you change your username, password, or PAT on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
 ```bash
 $ git credential-osxkeychain erase
 host=github.com
@@ -106,21 +103,28 @@ protocol=https
 ```
 If it's successful, nothing will print out. To test that it works, try using commands like `git clone`, `git fetch`, `git pull` or `git push` with HTTPS URLs. If you are prompted for your GitHub username and PAT, the keychain entry was deleted. For example, on the command line you would enter:
 ```bash
-$ git clone https://github.com/USERNAME/REPOSITORY-NAME.git
+$ git clone https://github.com/USERNAME/REPOSITORY.git
 Username: your_username
-Password: your_token
+Password: your_PAT
 ```
 
-If, after creating a repository, you need to [switch from HTTPS to SSH](https://docs.github.com/en/github/getting-started-with-github/managing-remote-repositories#switching-remote-urls-from-https-to-ssh), type:
-```bash
-$ git remote set-url origin git@github.com:USERNAME/REPOSITORY-NAME.git
-```
+#### SSH
+If you want to use SSH with GitHub, follow [these instructions](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
 
-The following command shows the URL that the repository will fetch from and push to, so it indicates whether Git is using HTTP or SSH:
+#### Check the Protocol
+The format of the remote URL from which the repository will fetch from and push to indicates whether Git is using HTTP or SSH: it starts with https<area>://github.com for HTTPS and with git@github<area>.com for SSH. To see the URL, type:
 ```bash
+$ git remote -v
+# OR
 $ git remote show origin
 ```
-The exact format of the URL depends on the protocol you are using, it starts with https<area>://github.com for HTTPS and with git@github<area>.com for SSH.
+
+#### Switch Protocols
+If, after creating a repository, you need to [switch from one protocol to the other](https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories#changing-a-remote-repositorys-url), type:
+```bash
+$ git remote set-url origin https://github.com/USERNAME/REPOSITORY.git	# Switch from SSH to HTTPS
+$ git remote set-url origin git@github.com:USERNAME/REPOSITORY.git	# Switch from HTTPS to SSH
+```
 
 
 ## Create Repositories <a name="repositories"></a>
@@ -320,75 +324,88 @@ $ git pull -p
 This section adapts the following [git-flow branching model](https://nvie.com/posts/a-successful-git-branching-model/) of Vincent Driessen to a research project.
 ```bash
 $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
+$ git push -u origin <branchname>	# Set upstream for branch <branchname> (for push and pull)
 
-$ git commit -am "Your message"		# Commit changes
+$ git add <filenames>			# Add files to the staging area
+$ git commit -m "Your message"		# Commit changes
 
 $ git checkout <parent>
-$ git merge --no-ff <branchname>	# Merge changes in <branchname> to <parent> without a fast-forward
-
+$ git pull				# Pull before push to have the latest version of the remote <parent> branch
+$ git merge --no-ff <branchname>	# Merge changes in <branchname> into <parent> without a fast-forward
 $ git push origin <parent>		# Push changes to the server
-$ git push origin <branchname>
-$ git branch -d <branchname>		# Delete local and remote branches
-$ git push origin --delete <branchname>
+
+$ git branch -d <branchname>		# Delete local branch (-d means "safe delete" e.g. only if already merged)
+$ git push origin --delete <branchname>	# Delete remote branch
 ```
 
 ### Naming Conventions <a name="naming"></a>
-The model uses two permanent branches.
+The model uses permanent and temporary branches. The permanent branches are:
 - The `main` branch is the default branch for any new repository.
 - The development or `dev` branch needs to be created, it branches off from `main` and merges back into `main`.
 
 Temporary branches have two *categories*:
-- Amend or `fix` branches, which branch off from `main` or `dev` and merge back into `main` or `dev`. The two *types* of `fix` branches are thus `mai` and `dev`.
-- Feature or `ftr` branches, which branch off from `dev` and merge back into `dev`. These are the most frequently used branches. They can be of three *types*:
+- Amend or `fix`, which branch off from `main` or `dev` and merge back into `main` or `dev`. Their *types* are thus `mai` and `dev`.
+- Feature or `ftr`, which branch off from `dev` and merge back into `dev`. They are the most frequently used branches and can be of three *types*:
 	- `data` branches deal with raw or analytic data, so this token will be followed by `raw` and `ans`.
 	- `code` branches deal with tidying or analyzing the data, so this token will be followed by `tdy` and `ans`.
 	- `docs` branches deal with issues regarding the paper, the slides or both (e.g. equations, figures, tables), so this token will be followed by `ppr`, `sld` and `mix`.
 
 Temporary branch names have the following structure: **category/type/task**.
-- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans`, `fix/mai`, `docs/mix/figure 5`. The first two do not include a task name and the last one includes a space in the name.
-- Temporary branch name examples: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
-- This structure follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
-- [This](https://github.com/pavelsolis/Replication-Folder) repository template (a folder structure that facilitates the reproducibility of research results) follows these naming conventions.
+- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (includes a space in the name).
+- **Examples** of temporary branch names: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
+- This structure for temporary branch names follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
+- [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) follows these naming conventions.
 
 
 ### Implementation of the Model <a name="implementation"></a>
-Implementation following the naming conventions:
+Implementation of the git-flow branching model with the naming conventions for a research project:
 ```bash
-# Develop branch
-$ git checkout -b dev main
-$ git push -u origin dev		# Sets the upstream for dev and see it in GitHub
+# Development branch
+	# Create dev branch
+$ git checkout -b dev main		# Create dev branch off main branch and switch to it
+$ git push -u origin dev		# Set upstream for dev branch
 	# Usual workflow
-$ git status
-$ git commit -am "Your message"
-	# To merge dev branch into main (close all open files from the dev branch first)
+$ git add <filenames>
+$ git commit -m "Your message"
+	# Merge dev branch into main (close all open files from dev branch first)
 $ git checkout main
-$ git pull
-$ git merge --no-ff dev			# Merge your changes to main without a fast-forward
-$ git push origin main		# Push changes to the server
-$ git push origin dev			# At this point, you can go back to dev branch (`git checkout dev')
-	# To delete the dev branch
-$ git branch -d dev			# Lowercase -d means "safe delete" e.g. only delete if merged; instead -D means force delete 
-$ git push origin --delete dev
+$ git pull				# Pull before push to have the latest version of remote dev branch
+$ git merge --no-ff dev			# Merge changes in dev into main without a fast-forward
+$ git push origin main			# Push changes to the server
+	# Delete dev branch
+$ git branch -d dev			# Delete (fully merged) local branch
+$ git push origin --delete dev		# Delete remote branch
 
 
-# Feature branches
-	# Create the branch
-$ git checkout -b ftr/cat/name dev
-$ git push -u origin ftr/cat/name	# Sets the upstream for the branch and see it in GitHub
+# Temporary branches
+	# Create temporary branch
+$ git checkout -b cat/typ/task dev	# Create temporary branch off dev branch and switch to it
+$ git push -u origin cat/typ/task	# Set upstream for the temporary branch
 	# Usual workflow
-$ git status
-$ git commit -am "Your message"
-	# To merge feature branch into dev (close all open files from the feature branch first)
+$ git add <filenames>
+$ git commit -m "Your message"
+	# Merge temporary branch into dev (close all open files from temporary branch first)
 $ git checkout dev
-$ git pull				# Pull before push to ensure you have the latest version of the remote dev branch
-$ git merge --no-ff ftr/cat/name	# Merge your branch changes to dev without a fast-forward
-$ git pull				# When working in teams, it might be needed to again pull to ensure you have the latest version of the remote dev branch and there are no conflicts
+$ git pull				# Pull before push to have the latest version of the remote temporary branch
+$ git merge --no-ff cat/typ/task	# Merge changes in temporary into dev without a fast-forward
+$ git pull				# Optional: it might be needed when working in teams to ensure no conflicts
 $ git push origin dev			# Push changes to the server
-$ git push origin ftr/cat/name		# Might need `git branch` for the name of the feature branch
-	# To delete the feature branch
-$ git branch -d ftr/cat/name		# Optional: remove fully merged local and remote branches
-$ git push origin --delete ftr/cat/name
+	# Delete temporary branch
+$ git branch -d cat/typ/task		# Delete (fully merged) local branch
+$ git push origin --delete cat/typ/task	# Delete remote branch
+```
+- For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
 
+<!---
+[Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
+Use meaningful branch names.
+Notice that a forward slash separates the tokens.
+take any of three tokens
+- All three of the different types of feature branches can be used for experimenting or testing minor things unrelated to the previous categories, in which case any of the three types will be followed by: `tst`.
+because `dev` is a permanent branch and `fix` branches are aimed to correct bugs in `dev` or `main` (e.g. due to a recent merge from the `dev` branch). 
+In sum, there are in total 13 possible types of temporary branches: 11 feautre branches and 2 fix branches.
+That is, their names need to include the `/feature-name` part (see first link above).
+`docs` branches deal with issues regarding the paper, slides, equations, figures, tables, references or settings so this token will be followed by `ppr`, `sld`, `eqn`, `fig`, `tbl`, `ref` and `set`.
 
 # Fix branches
 	# Create the branch
@@ -416,20 +433,7 @@ $ git push origin fix/dev/name
 	# To delete the fix branch
 $ git branch -d fix/xxx/name		# Optional: remove local and remote branches
 $ git push origin --delete fix/xxx/name
-```
-
-<!---
-[Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
-Use meaningful branch names.
-Notice that a forward slash separates the tokens.
-take any of three tokens
-- All three of the different types of feature branches can be used for experimenting or testing minor things unrelated to the previous categories, in which case any of the three types will be followed by: `tst`.
-because `dev` is a permanent branch and `fix` branches are aimed to correct bugs in `dev` or `main` (e.g. due to a recent merge from the `dev` branch). 
-In sum, there are in total 13 possible types of temporary branches: 11 feautre branches and 2 fix branches.
-That is, their names need to include the `/feature-name` part (see first link above).
-`docs` branches deal with issues regarding the paper, slides, equations, figures, tables, references or settings so this token will be followed by `ppr`, `sld`, `eqn`, `fig`, `tbl`, `ref` and `set`.
 -->
-
 
 
 ## Collaborating with Git (need work)
