@@ -11,10 +11,10 @@ Below are step-by-step instructions on how to work with Git and GitHub from scra
 - The most commonly used commands in the terminal when working with Git are: `ls` to list files, and `cd` to navigate through folders.
 
 All Git commands have the following syntax: `git verb options`.
-- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below, but you can see a useful Git cheat-sheet [here](https://gist.github.com/davfre/8313299).
+- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below. You can also refer to this [Git cheat-sheet](https://gist.github.com/davfre/8313299).
 - Git commands only work when (in the terminal) you are in a folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
 
-Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other great introductory pieces to Git and GitHub.
+Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other introductory pieces to Git and GitHub.
 
 ## Contents
 1. [Setting Up Git](#setting-up)
@@ -34,6 +34,7 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 9. [A Branching Model for Research](#branching-model)
 	1. [Naming Conventions](#naming)
 	1. [Implementation of the Model](#implementation)
+1. [Collaborating with Git](#collaborating)
 1. [Annotations](#annotations)
 
 ## Setting Up Git <a name="setting-up"></a>
@@ -142,16 +143,18 @@ This initializes a folder as a Git repository in your machine. You can now make 
 - You can also create a local repo from the terminal. Go to the desired folder using `cd` and type `git init`. Then, you need to type `git push -u origin main` in your first push to upstream the local repo to a remote (empty) repo. This creates an upstream branch `main` *and* sets `origin/main` as a remote-tracking branch (i.e. the local branch `main` will be pushed to the upstream branch (origin) `main`).
 - Avoid keeping your local repo in the Dropbox folder: there is a chance of conflicts between the syncing of Dropbox and GitHub, and the space limit in Dropbox might be an issue when the project's size grows.
 - Git does not include empty folders in updates to remote repositories in GitHub. To make Git to recognize such folders, the non-official convention is to put a *.gitkeep* file in them. For this, move to the empty folder with `cd` and type `touch .gitkeep`.
-- Regarding the *.gitignore* file:
+- Regarding the [*.gitignore* file](https://help.github.com/en/articles/ignoring-files):
 	- Make sure to create it before including files with unwanted extensions in your local repository. If you include a file with an unwanted extension before creating the *.gitignore* file, you will need to untrack the file with `git rm --cached <filename.ext>`.
-	- It might be a good idea to include Excel files (.xls*) in the file because of size limits. In fact, very large files (> 100 MB) do not work well in version control because they are often duplicated in the history and are not supported by GitHub.
+	- You may want to include .xls* files because of size limits. GitHub blocks files larger than 100 MB and sends warnings for files over 50 MB. In fact, very large files do not work well in version control because they are often duplicated in the history.
 	- You can place the file within any folder in the Git repository except in the *.git* folder itself, in which case the file won't work. However, if you need to have a private version of the *.gitignore* file, you can add the rules to the *.git/info/exclude* file.
+- If you want to relocate a local repo in your machine, [simply move](https://stackoverflow.com/questions/11384928/change-git-repository-directory-location) the whole repo (including the hidden `.git` directory).
 - If at some point you want to [rename a repository](https://help.github.com/en/articles/renaming-a-repository), you need to change the name in github.com (under the settings of a project) and in your local machine. Use `git remote -v` to get the remote URL and `git remote set-url origin <new-URL>` to set the new URL.
 
 <!---
 You can create a local repo from the terminal with `git init` or from github.com. With the first option, you will later need to call that local repository from GitHub. With the second option, you will later need to clone the remote repository into your local machine.
 or under the 'Repositories' tab select 'New'.
-include a license file (or at least explicitly claim copyright by including: Copyright [yyyy] [name of copyright owner]) 
+include a license file (or at least explicitly claim copyright by including: Copyright [yyyy] [name of copyright owner]).
+very large files (> 100 MB).
 -->
 
 
@@ -214,17 +217,13 @@ $ git restore .				# For all unstaged files in the working directory
 ```
 
 ### Uncommit Changes <a name="git-reset"></a>
-To move incomplete or wrongly committed files back to the staging area from the immediate commit (maintaining the changes):
+You can rewrite history and to throw out commits that you no longer want (e.g. incomplete or wrongly committed files):
 ```bash
-$ git reset --soft HEAD^
+$ git reset --soft HEAD^			# Undo last commit but put changes back in staging area (keep changes)
+$ git reset --hard HEAD^			# Undo last commit and all changes
+$ git checkout COMMIT_ID -- <file1>, <file2>	# Reverse changes from a previous commit
 ```
-- If you also did a `git push`, see [this](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
-- **Warning**: `git reset` also has the option `--hard`, which can be used to rewrite history and to throw out commits that you no longer want.
-
-To check out files from a previous commit (to reverse changes):
-```bash
-$ git checkout COMMIT_IDENTIFIER -- file1, file2
-```
+- If you also did a `git push`, see [here](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
 
 <!---
 - `--cached` does not affect the working directory because it works directly in the index.
@@ -255,7 +254,7 @@ $ git checkout -t origin/<branchname>	# Create <branchname>, switch to it and tr
 ```
 - Once in the new branch, you can modify files, add and commit as many edits as necessary with `git add` and `git commit`.
 - Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch, Git will update the files in the repository to match the version to which you are moving to.
-- If you introduce changes in one branch and suddenly realized that it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch. If Git doesn't allow you to switch, you can use `git commit` to the current branch and then switch to a different branch. Alternatively, you can save your changes in a temporary branch using `git stash`, make the required changes in another branch and then restore the interrupted changes using `git stash pop`. `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
+- For more on how to work with branches in Git see [here](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git).
 - For an explanation of the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch, see [here](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch).
 
 To see the available branches:
@@ -286,7 +285,7 @@ To upload the commits you made in the local branch `<branchname>` to the remote 
 $ git checkout <branchname>	# In case you are not already in branch <branchname>, switch to it
 $ git push	   		# Upload the current branch (<branchname>) to the associated upstream
 ```
-- A longer syntax of the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name. Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote-tracking branch on the upstream. See [here](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) for an explanation.
+- A longer syntax of the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name. Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote-tracking branch on the upstream. See [1](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) and [2](https://stackoverflow.com/questions/37770467/why-do-i-have-to-git-push-set-upstream-origin-branch) for an explanation.
 - For `git push` to work, you must have associated an upstream for <branchname> when you created it (see `git push -u` or `git checkout -t` above).
 - Note that you need to switch to `<branchname>` before pushing. If you are on `<parent>` and type (1) `git push`, Git will push the `<parent>` not `<branchname>`, or (2) `git push origin <branchname>`, Git will try to push the local `<parent>` branch (being the *current* branch) to the remote `<branchname>`, which would be incorrect. If you are in `<parent>` and you don't want to checkout to `<branchname>`, you can use: `git push origin <branchname>:<branchname>`.
 - The `git push` command pushes [just the current branch](https://stackoverflow.com/questions/820178/how-do-you-push-just-a-single-git-branch-and-no-other-branches), not other branches nor the `<parent>` branch. If, for every branch that exists on the local side, you want the remote side to be updated (as long as a branch of the same name already exists on the remote side) use: `git push origin :` or `git push origin +:` (for non-fast-forward updates).
@@ -299,7 +298,7 @@ $ git checkout <parent>				# Switch to the branch that will import the changes
 $ git pull					# Pull before push to have the latest version of the <parent> branch
 $ git merge --no-ff <branchname>		# Merge changes in <branchname> to <parent> without a fast-forward
 $ git branch -d <branchname>			# Delete the local branch
-$ git push origin --delete <branch_name>	# Delete the remote-tracking branch
+$ git push -d origin <branch_name>		# Delete the remote-tracking branch
 ```
 - To delete a branch in GitHub, click on the 'branches' tab at the top of the project's contents and click the trash button nex to the name of the branch, but beware that it will still show up with `git branch -a`.
 
@@ -316,6 +315,7 @@ Only delete temporary branches (`ftr` and `fix`), not permanent branches (`dev`)
 
 To delete a **remote** branch from the terminal ([link](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-both-locally-and-remotely), [link](https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a)):
 $ git branch -d -r origin/<branch_name>		# Remove a particular remote-tracking branch
+$ git push origin --delete <branch_name>	# Delete the remote-tracking branch
 
 $ git remote prune origin
 $ git fetch --prune
@@ -342,7 +342,7 @@ $ git merge --no-ff <branchname>	# Merge changes in <branchname> into <parent> w
 $ git push origin <parent>		# Push changes to the server
 
 $ git branch -d <branchname>		# Delete local branch (-d means "safe delete" e.g. only if already merged)
-$ git push origin --delete <branchname>	# Delete remote branch
+$ git push -d origin <branchname>	# Delete remote branch
 ```
 
 ### Naming Conventions <a name="naming"></a>
@@ -381,7 +381,7 @@ $ git merge --no-ff dev			# Merge changes in dev into main without a fast-forwar
 $ git push origin main			# Push changes to the server
 	# Delete dev branch
 $ git branch -d dev			# Delete (fully merged) local branch
-$ git push origin --delete dev		# Delete remote branch
+$ git push -d origin dev		# Delete remote branch
 
 
 # Temporary branches
@@ -399,11 +399,14 @@ $ git pull				# Optional: it might be needed when working in teams to ensure no 
 $ git push origin dev			# Push changes to the server
 	# Delete temporary branch
 $ git branch -d cat/typ/task		# Delete (fully merged) local branch
-$ git push origin --delete cat/typ/task	# Delete remote branch
+$ git push -d origin cat/typ/task	# Delete remote branch
 ```
 - For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
 
 <!---
+$ git push origin --delete <branchname>	# Delete remote branch
+$ git push origin --delete dev		# Delete remote branch
+$ git push origin --delete cat/typ/task	# Delete remote branch
 [Implementation](https://stackoverflow.com/questions/4470523/create-a-branch-in-git-from-another-branch)
 Use meaningful branch names.
 Notice that a forward slash separates the tokens.
@@ -443,45 +446,65 @@ $ git push origin --delete fix/xxx/name
 -->
 
 
-## Collaborating with Git (need work)
+## Collaborating with Git <a name="collaborating"></a>
+Suppose you create a local branch B from the remote branch A and later on, the latter is updated by a few commits. In these cases, it is recommended to frequently merge the changes in branch A into branch B to ensure that you are seeing the latest changes and to minimize the chances of conflicts when you merge your local branch B back into the remote branch A. First pull down the latest version of branch A and then merge those changes into your local branch B.
+```bash
+$ git checkout <branchA>
+$ git pull
+$ git checkout <branchB>
+$ git merge <branchA>
+```
+- This will automatically merge your changes from branch A to branch B as long as there are no conflicts.
+
+If you are working in branch X and you suddenly realized that you need to make minor changes in branch Y, you have two options:
+1. Commit your changes in branch X and then switch to branch Y.
+2. Temporarily save your changes in branch X, make the required changes in branch Y and then restore the interrupted changes in branch X.
+```bash
+# Uncommitted changes in <branchX>
+$ git stash			# Save your changes in a temporary branch
+$ git checkout <branchY>	# Move to <branchY>
+# Edit, test, commit, push in <branchY>
+$ git checkout <branchX>	# Return to <branchX>
+$ git stash pop			# Restore the interrupted changes in <branchX>
+# Continue working on <branchX>
+```
+- `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 
 [Can multiple people commit to the same branch?](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git#:~:text=Multiple%20people%20can%20work%20on,with%20both%20of%20your%20changes.)
 
-[Working with branches in Git](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git)
-
-[Update current branch from parent banch](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch)
-
-[Delete a branch locally and remotely](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely)
-
 [Set an upstream when the current branch is behind the remote branch](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch)
+
+<!---
+[Delete a branch locally and remotely](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely)
+[Update current branch from parent banch](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch)
+it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch.
+-->
 
 
 ## Annotations <a name="annotations"></a>
-- A **ref** is anything pointing to a commit (e.g. branches (heads), tags, and remote branches), they are stored in the .git/refs directory (e.g. `refs/heads/main`, `refs/remotes/main`, `refs/tags`). For example, `refs/heads/0.58` specifies a branch named `0.58`; if you don't specify what namespace the ref is in, Git will look in the default ones, so using only `0.58` is ambiguous (there could have both a `branch` and a `tag` named `0.58`).
-- When an update changes a branch (or more in general, a ref) that used to point at commit A to point at another commit B, it is called a **fast-forward** update if and only if B is a descendant of A. Hence a fast-forward update from A to B does not lose any history.
-- [Why do I have to `git push --set-upstream origin <branch>`?](https://stackoverflow.com/questions/37770467/why-do-i-have-to-git-push-set-upstream-origin-branch)
-- [Working with large files](https://help.github.com/en/articles/working-with-large-files)
-- [Ignoring files](https://help.github.com/en/articles/ignoring-files)
-- [Relocate a local repo](https://stackoverflow.com/questions/11384928/change-git-repository-directory-location)
-- GitHub recomends a limit of 1 GB per project and blocks files larger than 100 MB, and it will send a warning in the terminal for each file of over 50MB. You can remove a big file [wrongly committed](https://thomas-cokelaer.info/blog/2018/02/git-how-to-remove-a-big-file-wrongly-committed/), but it may cause the local and remote branches to diverge (see [this](https://stackoverflow.com/questions/2452226/master-branch-and-origin-master-have-diverged-how-to-undiverge-branches) and [this](http://serebrov.github.io/html/2012-02-13-git-branches-have-diverged.html)).
+- A **ref** is anything pointing to a commit (e.g. heads (branches), tags, remote branches), they are stored in the .git/refs directory (e.g. `refs/heads/main`, `refs/remotes/main`, `refs/tags`). For example, `refs/heads/0.58` specifies a branch named `0.58`. If you don't specify what namespace the ref is in, Git will look in the default ones, so using only `0.58` is ambiguous (there could be both a `branch` and a `tag` named `0.58`).
+- When an update changes a branch (or more generally, a ref) that used to point at commit A to point at another commit B, it is called a **fast-forward** update if and only if B is a descendant of A. Hence a fast-forward update from A to B does not lose any history.
+- To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin). 
+- GitHub blocks files larger than 100 MB and sends warnings in the terminal for files over 50 MB.
+	- If you need to work with large files, see [here](https://docs.github.com/en/repositories/working-with-files/managing-large-files).
+	- You can remove a big file [wrongly committed](https://thomas-cokelaer.info/blog/2018/02/git-how-to-remove-a-big-file-wrongly-committed/), but it may cause the local and remote branches to diverge (see [1](https://stackoverflow.com/questions/2452226/master-branch-and-origin-master-have-diverged-how-to-undiverge-branches) and [2](http://serebrov.github.io/html/2012-02-13-git-branches-have-diverged.html)).
 ```bash
 $ git filter-branch --tree-filter 'rm -rf path/to/filename.ext' HEAD
 $ git push
 
-$ git rebase origin/<branchname>
+$ git rebase origin/<branchname>	# If local and remote branches diverge
 ```
-
-- To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin). 
-
 - If `git push` displays the following (due to a git-lfs hook):
 ```bash
-This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/pre-push.
+This repository is configured for Git LFS but 'git-lfs' was not found on your path.
+If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/pre-push.
 
 error: failed to push some refs to 'github.com:USERNAME/REPOSITORY.git'
 ```
-You [may try to remove](https://github.com/git-lfs/git-lfs/issues/333) the folder `.git/lfs` and the file `.git/hooks/pre-push`.
+You may want to [try to remove](https://github.com/git-lfs/git-lfs/issues/333) the folder `.git/lfs` and the file `.git/hooks/pre-push`.
 
 <!---
-Only push into [bare repositories](https://stackoverflow.com/questions/1298499/git-push-not-send-changes-to-remote-git-repository).
 - To understand GitHub from scratch: Healey (intuitively explains Git workflow); Youtube videos by Learn Code show the basic workflow; Pinter (2019) explains benefits and gives recommendations; Sviatoslav (2017); Notes by Fernández-Villaverde complement/reinforce the previous one; StackExchange links for clarification, reinforcement and understanding the daily workflow.
+GitHub recomends a limit of 1 GB per project.
+- Only push into [bare repositories](https://stackoverflow.com/questions/1298499/git-push-not-send-changes-to-remote-git-repository).
 -->
