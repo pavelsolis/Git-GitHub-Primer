@@ -292,7 +292,7 @@ $ git push	   		# Upload the current branch (<branchname>) to the associated ups
 - When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. Notice that it is usually a bad idea to merge your own pull requests when working in a team.
 
 ### Merge and Delete Branches <a name="delete"></a>
-After the changes for which the temporary branch `<branchname>` was created have been made, you want to incorporate (or merge) those changes into its upstream branch. Once the merge is done, `<branchname>` can be safely deleted locally and remotely.
+After the changes for which the temporary branch `<branchname>` was created have been made, you want to incorporate (or merge) those changes into its upstream branch. Once the merge is done, `<branchname>` can be safely [deleted locally and remotely](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely).
 ```bash
 $ git checkout <parent>				# Switch to the branch that will import the changes
 $ git pull					# Pull before push to have the latest version of the <parent> branch
@@ -447,18 +447,19 @@ $ git push origin --delete fix/xxx/name
 
 
 ## Collaborating with Git <a name="collaborating"></a>
-Suppose you create a local branch B from the remote branch A and later on, the latter is updated by a few commits. In these cases, it is recommended to frequently merge the changes in branch A into branch B to ensure that you are seeing the latest changes and to minimize the chances of conflicts when you merge your local branch B back into the remote branch A. First pull down the latest version of branch A and then merge those changes into your local branch B.
+Suppose you create a local branch B off the remote branch A and later on, someone else updates branch A by a few commits. You should [*frequently* merge the changes in branch A into branch B](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch) to see the latest updates and to minimize the chances of conflicts when you eventually merge your local branch B back into the remote branch A. First, pull down the latest version of branch A, and then merge those changes into your local branch B.
 ```bash
 $ git checkout <branchA>
 $ git pull
 $ git checkout <branchB>
 $ git merge <branchA>
 ```
-- This will automatically merge your changes from branch A to branch B as long as there are no conflicts.
+- This will automatically merge the changes from branch A to branch B as long as there are no conflicts.
+- The frequency to do this depends on the number of users pushing their changes to branch A.
 
-If you are working in branch X and you suddenly realized that you need to make minor changes in branch Y, you have two options:
-1. Commit your changes in branch X and then switch to branch Y.
-2. Temporarily save your changes in branch X, make the required changes in branch Y and then restore the interrupted changes in branch X.
+If you are working in branch X and suddenly realize that you need to make minor changes in branch Y, you have two options:
+1. Commit your (likely unfinished) changes in branch X and switch to branch Y.
+2. Temporarily save the changes in branch X, make the required edits in branch Y and then restore the interrupted changes in branch X.
 ```bash
 # Uncommitted changes in <branchX>
 $ git stash			# Save your changes in a temporary branch
@@ -470,13 +471,10 @@ $ git stash pop			# Restore the interrupted changes in <branchX>
 ```
 - `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 
-[Can multiple people commit to the same branch?](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git#:~:text=Multiple%20people%20can%20work%20on,with%20both%20of%20your%20changes.)
-
-[Set an upstream when the current branch is behind the remote branch](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch)
+If you need to work on the [same branch from different machines](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git) (e.g. office and home), in each machine create a branch with the same name off the same parent and set the upstream also using the same name. After you create the branch in the first machine and push changes to it, the recently-created branches in the other machines will be behind the remote branch, so you need to [set an upstream when the current branch is behind the remote branch](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch). When creating the branch in the second machine you may need to make an existing branch track a remote branch.
+- When you finish a working session in one machine, always commit and push the changes. When you start working on another machine, always pull first.
 
 <!---
-[Delete a branch locally and remotely](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely)
-[Update current branch from parent banch](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch)
 it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch.
 -->
 
