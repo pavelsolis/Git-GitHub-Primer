@@ -3,16 +3,16 @@
 **Git** is a version control software. **GitHub** is a hosting service to track changes. With them, you can keep track of the changes in a project and have a backup online.
 
 A few basic concepts to start:
-- A **repository** or repo is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
+- A **repository** or **repo** is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
 - A **branch** is a specific sequence of commits. An **upstream** is an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
 Below are step-by-step instructions on how to work with Git and GitHub from scratch using the terminal (or shell).
 - A line starting with '$' refers to commands typed in the terminal, and a line starting with '>' represents output shown in the terminal.
-- The most commonly used commands in the terminal when working with Git are: `ls` to list files, and `cd` to navigate through folders.
+- The most commonly used commands in the terminal when working with Git are `ls` to list files, and `cd` to navigate through folders.
 
 All Git commands have the following syntax: `git verb options`.
-- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below. You can also refer to this [Git cheat-sheet](https://gist.github.com/davfre/8313299).
-- Git commands only work when (in the terminal) you are in a folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
+- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below and summarized in this [Git cheat-sheet](https://gist.github.com/davfre/8313299).
+- Git commands only work when (in the terminal) you are in a directory or folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
 
 Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other introductory pieces to Git and GitHub.
 
