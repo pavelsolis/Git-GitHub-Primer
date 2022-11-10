@@ -291,7 +291,7 @@ $ git push	   		# Upload the current branch (<branchname>) to the associated ups
 - The `git push` command pushes [just the current branch](https://stackoverflow.com/questions/820178/how-do-you-push-just-a-single-git-branch-and-no-other-branches), not other branches nor the `<parent>` branch. If, for every branch that exists on the local side, you want the remote side to be updated (as long as a branch of the same name already exists on the remote side) use: `git push origin :` or `git push origin +:` (for non-fast-forward updates).
 - When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. It is usually a bad idea to merge your own pull requests when working in a team.
 
-**Pushing to the same branch**. If you need to work on the [same branch from different machines](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git) (e.g. office and home), *in each machine* create a branch with the *same name* off the *same parent* and set the *same upstream*. You just need to account for the blackout after the first branch is created. That is, in the first machine, you create the branch off the parent and push changes to the remote. In the other machines, you need to create the branch off the parent but the target upstream will be ahead by the commits you push from the first machine, so you [set the upstream considering that the branch is behind the remote](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch).
+**Pushing to the same branch**. If you need to work on the [same branch](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git) from different machines (e.g. office and home), *in each machine* create a branch with the *same name* off the *same parent* and set the *same upstream*. You just need to account for the blackout after the first branch is created. That is, in the first machine, you create the branch off the parent and push changes to the remote. In the other machines, you need to create the branch off the parent but the target upstream will be ahead by the commits you push from the first machine, so you need to [set the upstream considering that the branch is behind the remote](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch).
 ```bash
 # In the first machine:
 $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
@@ -302,7 +302,7 @@ $ git push -u origin <branchname>	# Set upstream for branch <branchname>
 $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
 $ git branch -u origin/<branchname>	# Set the behind-the-remote branch <branchname> to track origin/<branchname>
 ```
-- When you finish a working session in one machine, always commit and push the changes. When you start working on another machine, always pull first.
+- When you finish working in one machine, always commit and push the changes. When you start working on another machine, always pull first.
 - The blackout originates when you push changes to the remote from the first machine *before* creating the branch in the other machines.
 
 ### Temporarily Save Changes <a name="git-stash"></a>
@@ -386,7 +386,7 @@ Temporary branches have two *categories*:
 - Feature or `ftr`, which branch off from `dev` and merge back into `dev`. They are the most frequently used and can be of three *types*:
 	- `data` branches deal with raw or analytic data, so this token will be followed by `raw` and `ans`.
 	- `code` branches deal with tidying or analyzing the data, so this token will be followed by `tdy` and `ans`.
-	- `docs` branches deal with issues in the paper, the slides or both (e.g. figures), so this token will be followed by `ppr`, `sld` and `mix`.
+	- `docs` branches deal with issues in the paper, slides or both (e.g. figures), so this token will be followed by `ppr`, `sld` and `mix`.
 
 Temporary branch names have the following structure: **category/type/task**.
 - *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (has a space).
