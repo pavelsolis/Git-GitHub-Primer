@@ -1,20 +1,19 @@
 # Git and GitHub Primer
 
-**Git** is a version control software. **GitHub** is a hosting service to track changes. With them, you can keep track of the changes in a project and have a backup online.
+With Git and GitHub, you can keep track of the changes in a project and have a backup online, without the need to save multiple versions of a file!
 
-A few basic concepts to start:
-- A **repository** or **repo** is a project (i.e. folder with files). Git tracks changes in files line by line and stores data as a series of snapshots. To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate.
+**Git** is a version control software, and **GitHub** is a hosting service for Git projects. Below are step-by-step instructions on how to work with them from scratch using the terminal (or [shell](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/)).
+- A line starting with '$' refers to commands typed in the terminal, and a line starting with '>' represents output shown in the terminal.
+- The most commonly used [commands in the terminal](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) when working with Git are `ls` to list files, and `cd` to navigate through folders.
+
+All **Git commands** have the following syntax: `git verb options`.
+- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below and summarized [here](https://gist.github.com/davfre/8313299). You can also see [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) and [5](https://nvie.com/posts/a-successful-git-branching-model/).
+- Git commands only work when (in the terminal) you are in a directory or folder that contains a Git project, otherwise the terminal will display the message "Not a git repository".
+
+A few key concepts to start:
+- A **repository** or **repo** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
 - A **branch** is a specific sequence of commits. An **upstream** is an online- or *remote*-tracking branch, associated with a regular branch (in your *local* machine). To **pull** is to download the changes from the remote repository to your local machine. To **push** is to upload the changes from your local machine to the remote repository.
 
-Below are step-by-step instructions on how to work with Git and GitHub from scratch using the terminal (or shell).
-- A line starting with '$' refers to commands typed in the terminal, and a line starting with '>' represents output shown in the terminal.
-- The most commonly used commands in the terminal when working with Git are `ls` to list files, and `cd` to navigate through folders.
-
-All Git commands have the following syntax: `git verb options`.
-- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below and summarized in this [Git cheat-sheet](https://gist.github.com/davfre/8313299).
-- Git commands only work when (in the terminal) you are in a directory or folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
-
-Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/) for an overview of the terminal, shell, and bash; [here](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) for the main bash commands to manage directories and files, and [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), [5](https://nvie.com/posts/a-successful-git-branching-model/) for other introductory pieces to Git and GitHub.
 
 ## Contents
 1. [Setting Up Git](#setting-up)
@@ -98,15 +97,15 @@ $ git config --global credential.helper osxkeychain
 [Update your GitHub access credentials](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/updating-your-github-access-credentials): When you change your username, password, or PAT on GitHub, you will need to [update your saved credentials](https://docs.github.com/en/github/using-git/updating-credentials-from-the-macos-keychain) in the the credential helper (`git credential-osxkeychain`) because they may be cached on your computer. To delete your credentials via the command line, type:
 ```bash
 $ git credential-osxkeychain erase
-host=github.com
-protocol=https
+> host=github.com
+> protocol=https
 > [Press Return]
 ```
 If it's successful, nothing will print out. To test that it works, try using commands like `git clone`, `git fetch`, `git pull` or `git push` with HTTPS URLs. If you are prompted for your GitHub username and PAT, the keychain entry was deleted. For example, on the command line you would enter:
 ```bash
 $ git clone https://github.com/USERNAME/REPOSITORY.git
-Username: your_username
-Password: your_PAT
+> Username: your_username
+> Password: your_PAT
 ```
 
 #### SSH
@@ -167,7 +166,7 @@ Git works by saving changes, not entire files. To track a timeline of edits, Git
 - The **commit history** is a permanent record of the changes. In this tree, HEAD is the name of the *last* commit in the current branch.
 
 ### Commit Changes <a name="git-commit"></a>
-It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git differences between new and modified files: new files are 'untracked' and modified files are 'unstaged'.
+It is recommended to commit changes per discrete task (which may involve multiple files). However, you may need to modify more files than the ones involved in a particular task, in which case you want to choose which of the modified files have to do with a particular task, commit only the changes to those files and leave for a later commit the changes to the other modified files unrelated to the particular task. Staging is what allows you to commit changes per task; all the files in the staging area are committed. In summary, you first add (new or modified) files to the staging area and then commit their changes. Git refers to new files as 'untracked' and to modified files as 'unstaged'.
 
 The workflow just described can be implemented with the `status`, `add`, `reset` and `commit` commands as follows:
 ```bash
@@ -389,7 +388,7 @@ Temporary branches have two *categories*:
 	- `docs` branches deal with issues in the paper, slides or both (e.g. figures), so this token will be followed by `ppr`, `sld` and `mix`.
 
 Temporary branch names have the following structure: **category/type/task**.
-- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (has a space).
+- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (there's a space).
 - **Examples** of valid names: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
 - This structure for temporary branch names follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
 - [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) aligns with these naming conventions.
@@ -495,10 +494,10 @@ $ git rebase origin/<branchname>	# If local and remote branches diverge
 - To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin).
 - If `git push` displays the following (due to a git-lfs hook):
 ```bash
-This repository is configured for Git LFS but 'git-lfs' was not found on your path.
+> This repository is configured for Git LFS but 'git-lfs' was not found on your path.
 If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/pre-push.
 
-error: failed to push some refs to 'github.com:USERNAME/REPOSITORY.git'
+> error: failed to push some refs to 'github.com:USERNAME/REPOSITORY.git'
 ```
 You may want to [try to remove](https://github.com/git-lfs/git-lfs/issues/333) the folder `.git/lfs` and the file `.git/hooks/pre-push`.
 
