@@ -28,13 +28,13 @@ Notes: See [here](https://www.earthdatascience.org/courses/intro-to-earth-data-s
 	1. [Uncommit Changes](#git-reset)
 7. [Refined Git Workflow: Branching and Merging](#refined-workflow)
 	1. [Create a Branch](#git-branch)
-	1. [Incorporate Changes to the Local Repo](#git-pull)
+	1. [Import Changes from the Remote Repo](#git-pull)
 	1. [Upload Changes to the Remote Repo](#git-push)
-	1. [Merge and Delete Branches](#delete)
+	2. [Temporarily Save Changes](#git-stash)
+	3. [Merge and Delete Branches](#delete)
 9. [A Branching Model for Research](#branching-model)
 	1. [Naming Conventions](#naming)
 	1. [Implementation of the Model](#implementation)
-1. [Collaborating with Git](#collaborating)
 1. [Annotations](#annotations)
 
 ## Setting Up Git <a name="setting-up"></a>
@@ -254,8 +254,8 @@ $ git checkout -t origin/<branchname>	# Create <branchname>, switch to it and tr
 ```
 - Once in the new branch, you can modify files, add and commit as many edits as necessary with `git add` and `git commit`.
 - Always commit *and* close the modified files *before* switching branches (with `git checkout`) because when you switch, Git will update the files in the repository to match the version to which you are moving to.
-- For more on how to work with branches in Git see [here](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git).
-- For an explanation of the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch, see [here](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch).
+- See [here](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git) for more on how to work with branches in Git.
+- See [here](https://stackoverflow.com/questions/10002239/difference-between-git-checkout-track-origin-branch-and-git-checkout-b-branch) for an explanation of the difference between `git checkout -b` and `git checkout -t` for tracking a remote branch.
 
 To see the available branches:
 ```bash
@@ -266,18 +266,18 @@ $ git branch -a			# List all local and remote branches
 - An asterisk before a branch name tells you the branch in which you are currently working on.
 - If you configured Git to display its output in color, the current local branch will be displayed in green, the local non-current branches will be displayed in white, and the remote branches will be displayed in red.
 
-### Incorporate Changes to the Local Repo <a name="git-pull"></a>
-When collaborating with other people, they will make changes to the files and push them to the remote repo, so the remote repo will frequently be ahead of your local repo. Let's say everyone in the team has access to the `<parent>` branch and you created a branch off the `<parent>` branch called `<branchname>`. Periodically, you would like to incorporate the latest version of the `<parent>` branch in the remote repo *into* your local branch `<branchname>` to ensure there are no conflicts with the changes you are making.
+### Import Changes from the Remote Repo <a name="git-pull"></a>
+If you create a local branch `<branchname>` off a remote branch `<parent>` that is regularly updated by other user(s), the remote repo will be frequently ahead of your local repo. In those cases, you should [merge the changes in `<parent>` into `<branchname>`](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch) to import the latest updates and to minimize the chances of conflicts when you eventually merge your local branch `<branchname>` back into the remote branch `<parent>`. The frequency to do this depends on the number of users pushing their changes to `<parent>`. Each time, first pull down the latest version of the `<parent>` branch, and then merge the changes into your local branch `<branchname>`.
 ```bash
-$ git checkout <parent>		# Switch to the local <parent> branch
-$ git pull			# Sync the local branch by downloading the latest version of the remote branch
-$ git checkout <branchname>	# Switch to the local <branchname> branch
-$ git merge <parent>		# Incorporate the changes in <parent> into the current branch (i.e. <branchname>)
+$ git checkout <parent>		# Switch to the <parent> branch
+$ git pull			# Sync up by downloading the latest version of the remote branch
+$ git checkout <branchname>	# Switch to the <branchname> branch
+$ git merge <parent>		# Incorporate the changes in <parent> into <branchname>
 ```
-- Always **commit before** pushing or pulling because if there are conflicts, Git reconstructs using the commits.
-- Always **pull before** you push so that the local and the remote repositories are in sync.
+- The merge works as long as there are no conflicts. If there are conflicts, they will be indicated in the respective file with `<<<` as delimiters. Your changes are marked as HEAD. Manually resolve any conflicts and delete all the delimiters. Add the file back (`git add .`) and finish the merge (`git merge --continue`). To abort the merge use: `git merge --abort`. For more on how to resolve merge conflicts, see [this](https://www.simplilearn.com/tutorials/git-tutorial/merge-conflicts-in-git).
+- Always **commit before** pulling (or pushing) because if there are conflicts, Git reconstructs using the commits.
+- Always **pull before** you push so that the remote and the local repos are in sync.
 - If you want to merge the changes in `<branchname>` into the `<parent>`: `git checkout <parent>`, `git merge <branchname>`.
-- If there are conflicts, they will be indicated in the respective file with `<<<` as delimiters. Your changes are marked as HEAD. Manually resolve any conflicts and delete all the delimiters. Add the file back (`git add .`) and finish the merge (`git merge --continue`). To abort the merge use: `git merge --abort`. For more on how to resolve merge conflicts, see [this](https://www.simplilearn.com/tutorials/git-tutorial/merge-conflicts-in-git).
 
 ### Upload Changes to the Remote Repo <a name="git-push"></a>
 To upload the commits you made in the local branch `<branchname>` to the remote branch `<branchname>`:
@@ -285,11 +285,40 @@ To upload the commits you made in the local branch `<branchname>` to the remote 
 $ git checkout <branchname>	# In case you are not already in branch <branchname>, switch to it
 $ git push	   		# Upload the current branch (<branchname>) to the associated upstream
 ```
-- A longer syntax of the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name. Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote-tracking branch on the upstream. See [1](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) and [2](https://stackoverflow.com/questions/37770467/why-do-i-have-to-git-push-set-upstream-origin-branch) for an explanation.
-- For `git push` to work, you must have associated an upstream for <branchname> when you created it (see `git push -u` or `git checkout -t` above).
+- For `git push` to work, you must have associated an upstream for `<branchname>` already (see `git push -u` or `git checkout -t` [above](#git-branch)).
+- A longer syntax for the `push` command is `git push <to> <from>`, which would translate into `git push origin <branchname>`. The short version is just `git push`, assuming the local and remote branches have the same name. Since Git 1.7.11, the default push policy is `simple`: push only the current branch, and only if it has a similarly named remote-tracking branch on the upstream. See [1](https://stackoverflow.com/questions/17096311/why-do-i-need-to-explicitly-push-a-new-branch/17096880#17096880) and [2](https://stackoverflow.com/questions/37770467/why-do-i-have-to-git-push-set-upstream-origin-branch) for an explanation.
 - Note that you need to switch to `<branchname>` before pushing. If you are on `<parent>` and type (1) `git push`, Git will push the `<parent>` not `<branchname>`, or (2) `git push origin <branchname>`, Git will try to push the local `<parent>` branch (being the *current* branch) to the remote `<branchname>`, which would be incorrect. If you are in `<parent>` and you don't want to checkout to `<branchname>`, you can use: `git push origin <branchname>:<branchname>`.
 - The `git push` command pushes [just the current branch](https://stackoverflow.com/questions/820178/how-do-you-push-just-a-single-git-branch-and-no-other-branches), not other branches nor the `<parent>` branch. If, for every branch that exists on the local side, you want the remote side to be updated (as long as a branch of the same name already exists on the remote side) use: `git push origin :` or `git push origin +:` (for non-fast-forward updates).
-- When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. Notice that it is usually a bad idea to merge your own pull requests when working in a team.
+- When collaborating with other people, you should create a **pull request** *before* merging your changes to a remote <parent> branch to allow other people to peer review the changes. This process starts a back and forth conversation about the changes. You can resolve conflicts if others have made changes to the repo, and make new commits and more merges to an existing pull request depending on the feedback received. When your changes are conflict-free and approved by someone with privileges, your branch is merged to the `<parent>` branch and everybody's branches can inherit those changes. It is usually a bad idea to merge your own pull requests when working in a team.
+
+**Pushing to the same branch**. If you need to work on the [same branch from different machines](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git) (e.g. office and home), *in each machine* create a branch with the *same name* off the *same parent* and set the *same upstream*. You just need to account for the blackout after the first branch is created. That is, in the first machine, you create the branch off the parent and push changes to the remote. In the other machines, you need to create the branch off the parent but the target upstream will be ahead by the commits you push from the first machine, so you [set the upstream considering that the branch is behind the remote](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch).
+```bash
+# In the first machine:
+$ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
+$ git push -u origin <branchname>	# Set upstream for branch <branchname>
+# Edit, test, commit, push in <branchname>
+
+# In other machines:
+$ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
+$ git branch -u origin/<branchname>	# Set the behind-the-remote branch <branchname> to track origin/<branchname>
+```
+- When you finish a working session in one machine, always commit and push the changes. When you start working on another machine, always pull first.
+- The blackout originates when you push changes to the remote from the first machine *before* creating the branch in the other machines.
+
+### Temporarily Save Changes <a name="git-stash"></a>
+If you are working in branch B and suddenly realize that you need to make minor changes in branch A, you can [commit your likely unfinished changes](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) in branch B and switch to work on branch A. [Alternatively](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git#What_do_I_do_if_I'm_in_the_middle_of_a_project_on_another_branch_and_I_need_to_make_some_minor_change_to_the_main_branch_(master)?), you can temporarily save the changes in branch B, make the required edits in branch A and then restore the interrupted changes in branch B.
+```bash
+# Uncommitted changes in <branchB>
+$ git stash			# Save your changes in a temporary branch
+
+$ git checkout <branchA>	# Move to <branchA>
+# Edit, test, commit, push in <branchA>
+
+$ git checkout <branchB>	# Return to <branchB>
+$ git stash pop			# Restore the interrupted changes in <branchB>
+# Continue working on <branchB>
+```
+- `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
 
 ### Merge and Delete Branches <a name="delete"></a>
 After the changes for which the temporary branch `<branchname>` was created have been made, you want to incorporate (or merge) those changes into its upstream branch. Once the merge is done, `<branchname>` can be safely [deleted locally and remotely](https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely).
@@ -297,9 +326,10 @@ After the changes for which the temporary branch `<branchname>` was created have
 $ git checkout <parent>				# Switch to the branch that will import the changes
 $ git pull					# Pull before push to have the latest version of the <parent> branch
 $ git merge --no-ff <branchname>		# Merge changes in <branchname> to <parent> without a fast-forward
-$ git branch -d <branchname>			# Delete the local branch
+$ git branch -d <branchname>			# Delete the local branch  (-d means "safe delete" e.g. only if already merged)
 $ git push -d origin <branch_name>		# Delete the remote-tracking branch
 ```
+- `git merge --no-ff` enforces the creation of an explicit merge commit, which gives you context when navigating the history. [Here](https://stackoverflow.com/questions/21817248/whats-the-difference-between-git-rebase-and-merge-no-ff) is an explanation of the difference between `git merge --no-ff` and `git rebase`.
 - To delete a branch in GitHub, click on the 'branches' tab at the top of the project's contents and click the trash button nex to the name of the branch, but beware that it will still show up with `git branch -a`.
 
 After deleting the local and remote branches, other machines may still have "obsolete tracking branches". To propagate the removal of remote branches in those other machines, they need to remove all such [stale](https://makandracards.com/makandra/6739-git-remove-information-on-branches-that-were-deleted-on-origin) branches locally:
@@ -326,80 +356,83 @@ $ git pull -p
 -->
 
 
-
 ## A Branching Model for Research <a name="branching-model"></a>
 This section adapts the following [git-flow branching model](https://nvie.com/posts/a-successful-git-branching-model/) of Vincent Driessen to a research project.
 ```bash
+# Create branch
 $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
 $ git push -u origin <branchname>	# Set upstream for branch <branchname> (for push and pull)
 
-$ git add <filenames>			# Add files to the staging area
-$ git commit -m "Your message"		# Commit changes
+# Edit, test, commit, push in <branchname>
 
+# Merge branch
 $ git checkout <parent>
 $ git pull				# Pull before push to have the latest version of the remote <parent> branch
 $ git merge --no-ff <branchname>	# Merge changes in <branchname> into <parent> without a fast-forward
 $ git push origin <parent>		# Push changes to the server
 
-$ git branch -d <branchname>		# Delete local branch (-d means "safe delete" e.g. only if already merged)
+# Delete branch
+$ git branch -d <branchname>		# Delete (fully merged) local branch
 $ git push -d origin <branchname>	# Delete remote branch
 ```
 
 ### Naming Conventions <a name="naming"></a>
-The model uses permanent and temporary branches. The permanent branches are:
+The model uses permanent and temporary branches. The permanent branches are `main` and `dev`.
 - The `main` branch is the default branch for any new repository.
 - The development or `dev` branch needs to be created, it branches off from `main` and merges back into `main`.
 
 Temporary branches have two *categories*:
 - Amend or `fix`, which branch off from `main` or `dev` and merge back into `main` or `dev`. Their *types* are thus `mai` and `dev`.
-- Feature or `ftr`, which branch off from `dev` and merge back into `dev`. They are the most frequently used branches and can be of three *types*:
+- Feature or `ftr`, which branch off from `dev` and merge back into `dev`. They are the most frequently used and can be of three *types*:
 	- `data` branches deal with raw or analytic data, so this token will be followed by `raw` and `ans`.
 	- `code` branches deal with tidying or analyzing the data, so this token will be followed by `tdy` and `ans`.
-	- `docs` branches deal with issues regarding the paper, the slides or both (e.g. equations, figures, tables), so this token will be followed by `ppr`, `sld` and `mix`.
+	- `docs` branches deal with issues in the paper, the slides or both (e.g. figures), so this token will be followed by `ppr`, `sld` and `mix`.
 
 Temporary branch names have the following structure: **category/type/task**.
-- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (includes a space in the name).
-- **Examples** of temporary branch names: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
+- *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (has a space).
+- **Examples** of valid names: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
 - This structure for temporary branch names follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
-- [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) follows these naming conventions.
+- [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) aligns with these naming conventions.
 
 
 ### Implementation of the Model <a name="implementation"></a>
 Implementation of the git-flow branching model with the naming conventions for a research project:
 ```bash
-# Development branch
-	# Create dev branch
+	# Development branch
+# Create dev branch
 $ git checkout -b dev main		# Create dev branch off main branch and switch to it
 $ git push -u origin dev		# Set upstream for dev branch
-	# Usual workflow
-$ git add <filenames>
-$ git commit -m "Your message"
-	# Merge dev branch into main (close all open files from dev branch first)
+
+# Edit, test, commit, push in dev
+
+# Merge dev branch into main (close all open files from dev branch first)
 $ git checkout main
 $ git pull				# Pull before push to have the latest version of remote dev branch
 $ git merge --no-ff dev			# Merge changes in dev into main without a fast-forward
 $ git push origin main			# Push changes to the server
-	# Delete dev branch
-$ git branch -d dev			# Delete (fully merged) local branch
-$ git push -d origin dev		# Delete remote branch
+
+# Delete dev branch
+$ git branch -d dev			# Delete (fully merged) local dev branch
+$ git push -d origin dev		# Delete remote dev branch
 
 
-# Temporary branches
-	# Create temporary branch
+	# Temporary branches
+# Create temporary branch
 $ git checkout -b cat/typ/task dev	# Create temporary branch off dev branch and switch to it
 $ git push -u origin cat/typ/task	# Set upstream for the temporary branch
-	# Usual workflow
-$ git add <filenames>
-$ git commit -m "Your message"
-	# Merge temporary branch into dev (close all open files from temporary branch first)
+
+# Edit, test, commit, push in temporary branch
+
+# Merge temporary branch into dev (close all open files from temporary branch first)
 $ git checkout dev
 $ git pull				# Pull before push to have the latest version of the remote temporary branch
 $ git merge --no-ff cat/typ/task	# Merge changes in temporary into dev without a fast-forward
-$ git pull				# Optional: it might be needed when working in teams to ensure no conflicts
+$ git pull --no-rebase			# Optional: it might be needed when working in teams to ensure no conflicts
 $ git push origin dev			# Push changes to the server
-	# Delete temporary branch
-$ git branch -d cat/typ/task		# Delete (fully merged) local branch
-$ git push -d origin cat/typ/task	# Delete remote branch
+
+# Delete temporary branch
+$ git branch -d cat/typ/task		# Delete (fully merged) local temporary branch
+$ git push -d origin cat/typ/task	# Delete remote temporary branch
 ```
 - For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
 
@@ -446,43 +479,9 @@ $ git push origin --delete fix/xxx/name
 -->
 
 
-## Collaborating with Git <a name="collaborating"></a>
-Suppose you create a local branch B off the remote branch A and later on, someone else updates branch A by a few commits. You should [*frequently* merge the changes in branch A into branch B](https://stackoverflow.com/questions/6836461/updating-the-current-branch-from-parent-branch) to see the latest updates and to minimize the chances of conflicts when you eventually merge your local branch B back into the remote branch A. First, pull down the latest version of branch A, and then merge those changes into your local branch B.
-```bash
-$ git checkout <branchA>
-$ git pull
-$ git checkout <branchB>
-$ git merge <branchA>
-```
-- This will automatically merge the changes from branch A to branch B as long as there are no conflicts.
-- The frequency to do this depends on the number of users pushing their changes to branch A.
-
-If you are working in branch X and suddenly realize that you need to make minor changes in branch Y, you have two options:
-1. Commit your (likely unfinished) changes in branch X and switch to branch Y.
-2. Temporarily save the changes in branch X, make the required edits in branch Y and then restore the interrupted changes in branch X.
-```bash
-# Uncommitted changes in <branchX>
-$ git stash			# Save your changes in a temporary branch
-$ git checkout <branchY>	# Move to <branchY>
-# Edit, test, commit, push in <branchY>
-$ git checkout <branchX>	# Return to <branchX>
-$ git stash pop			# Restore the interrupted changes in <branchX>
-# Continue working on <branchX>
-```
-- `git stash` can also be used when your local changes conflict with the changes in the upstream (in which case, `git pull` will not merge): `git stash`, `git pull`, `git stash pop`.
-
-If you need to work on the [same branch from different machines](https://stackoverflow.com/questions/913012/committing-to-the-same-branch-with-git) (e.g. office and home), in each machine create a branch with the same name off the same parent and set the upstream also using the same name. After you create the branch in the first machine and push changes to it, the recently-created branches in the other machines will be behind the remote branch, so you need to [set an upstream when the current branch is behind the remote branch](https://stackoverflow.com/questions/520650/make-an-existing-git-branch-track-a-remote-branch). When creating the branch in the second machine you may need to make an existing branch track a remote branch.
-- When you finish a working session in one machine, always commit and push the changes. When you start working on another machine, always pull first.
-
-<!---
-it would be better to switch to a different branch, Git [may or may not](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) allow you to switch.
--->
-
-
 ## Annotations <a name="annotations"></a>
 - A **ref** is anything pointing to a commit (e.g. heads (branches), tags, remote branches), they are stored in the .git/refs directory (e.g. `refs/heads/main`, `refs/remotes/main`, `refs/tags`). For example, `refs/heads/0.58` specifies a branch named `0.58`. If you don't specify what namespace the ref is in, Git will look in the default ones, so using only `0.58` is ambiguous (there could be both a `branch` and a `tag` named `0.58`).
-- When an update changes a branch (or more generally, a ref) that used to point at commit A to point at another commit B, it is called a **fast-forward** update if and only if B is a descendant of A. Hence a fast-forward update from A to B does not lose any history.
-- To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin). 
+- When an update changes a branch (or more generally, a ref) that used to point at commit A to point at another commit B, it is called a **fast-forward update** if and only if B is a descendant of A. Hence a fast-forward update from A to B does not lose any history.
 - GitHub blocks files larger than 100 MB and sends warnings in the terminal for files over 50 MB.
 	- If you need to work with large files, see [here](https://docs.github.com/en/repositories/working-with-files/managing-large-files).
 	- You can remove a big file [wrongly committed](https://thomas-cokelaer.info/blog/2018/02/git-how-to-remove-a-big-file-wrongly-committed/), but it may cause the local and remote branches to diverge (see [1](https://stackoverflow.com/questions/2452226/master-branch-and-origin-master-have-diverged-how-to-undiverge-branches) and [2](http://serebrov.github.io/html/2012-02-13-git-branches-have-diverged.html)).
@@ -492,6 +491,8 @@ $ git push
 
 $ git rebase origin/<branchname>	# If local and remote branches diverge
 ```
+- `git pull` equals either `git fetch` + `git merge` (default) or `git fetch` + `git rebase`, depending on configuration options or command line flags. Thus, the opposite of `git push` is `git fetch` not `git pull`. `git merge` and `git rebase` reconcile diverging branches, the choice between them depends on how you want the commit history to look like (see [1](https://stackoverflow.com/questions/21817248/whats-the-difference-between-git-rebase-and-merge-no-ff) and [2](https://stackoverflow.com/questions/28140434/is-there-a-difference-between-git-rebase-and-git-merge-ff-only)).
+- To recover from an incomplete rebase operation and detached HEAD, see [this](https://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin).
 - If `git push` displays the following (due to a git-lfs hook):
 ```bash
 This repository is configured for Git LFS but 'git-lfs' was not found on your path.
@@ -505,4 +506,5 @@ You may want to [try to remove](https://github.com/git-lfs/git-lfs/issues/333) t
 - To understand GitHub from scratch: Healey (intuitively explains Git workflow); Youtube videos by Learn Code show the basic workflow; Pinter (2019) explains benefits and gives recommendations; Sviatoslav (2017); Notes by Fernández-Villaverde complement/reinforce the previous one; StackExchange links for clarification, reinforcement and understanding the daily workflow.
 GitHub recomends a limit of 1 GB per project.
 - Only push into [bare repositories](https://stackoverflow.com/questions/1298499/git-push-not-send-changes-to-remote-git-repository).
+- [git rebase after previous git merge](https://stackoverflow.com/questions/6248231/git-rebase-after-previous-git-merge).
 -->
