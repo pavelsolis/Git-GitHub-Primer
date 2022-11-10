@@ -69,7 +69,7 @@ To check the configuration settings, type `git config --list`. For more on setti
 
 
 ### Accessing GitHub from Git <a name="access-github"></a>
-To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to interact (e.g. clone, pull, push) with the remote repository, the terminal will display the following error:
+Create an account in [GitHub](https://github.com/), if you haven't already. To access a remote repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to interact (e.g. clone, pull, push) with the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
