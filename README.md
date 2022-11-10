@@ -430,6 +430,7 @@ $ git push origin dev			# Push changes to the server
 $ git branch -d cat/typ/task		# Delete (fully merged) local temporary branch
 $ git push -d origin cat/typ/task	# Delete remote temporary branch
 ```
+- You may need to create the `dev` branch in different machines. See [above](https://github.com/pavelsolis/Git-GitHub-Primer/blob/main/README.md#upload-changes-to-the-remote-repo-) on how to push to the same branch from multiple machines.
 - For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
 
 <!---
