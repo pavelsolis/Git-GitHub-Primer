@@ -299,7 +299,7 @@ $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <pa
 $ git branch -u origin/<branchname>	# Set the behind-the-remote branch <branchname> to track origin/<branchname>
 ```
 - When you finish working in one machine, always commit and push the changes. When you start working on another machine, always pull first.
-- The blackout originates when you push changes to the remote from the first machine *before* creating the branch in the other machines.
+- The blackout originates when you push changes to the remote from the first machine *before* creating the branch in the other machines. As long as there is no push between the creation of the branches, use `git push -u origin <branchname>` to set the set upstream.
 
 ### Temporarily Save Changes <a name="git-stash"></a>
 If you are working in branch B and suddenly realize that you need to make minor changes in branch A, you can [commit your likely unfinished changes](https://stackoverflow.com/questions/22053757/checkout-another-branch-when-there-are-uncommitted-changes-on-the-current-branch) in branch B and switch to work on branch A. [Alternatively](http://genomewiki.ucsc.edu/index.php/Working_with_branches_in_Git#What_do_I_do_if_I'm_in_the_middle_of_a_project_on_another_branch_and_I_need_to_make_some_minor_change_to_the_main_branch_(master)?), you can temporarily save the changes in branch B, make the required edits in branch A and then restore the interrupted changes in branch B.
