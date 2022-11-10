@@ -47,7 +47,7 @@ Git uses a username to associate commits with an identity. Set your Git username
 ```bash
 $ git config --global user.name "Your Name"
 ```
-Note: Your Git username is not the same as your GitHub username. 
+- Your Git username is not the same as your GitHub username. 
 
 Set your commit email address in Git:
 ```bash
@@ -72,7 +72,7 @@ To check the configuration settings, type `git config --list`. For more on setti
 
 
 ### Accessing GitHub from Git <a name="access-github"></a>
-To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to clone, pull, push, etc. from or to the remote repository, the terminal will display the following error:
+To access a GitHub repository from Git, you need to [authenticate](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) with GitHub using either HTTPS or SSH protocols. If you don't authenticate, when you try to interact (e.g. clone, pull, push) with the remote repository, the terminal will display the following error:
 ```bash
 > Permission denied (publickey)
 ```
