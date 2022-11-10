@@ -2,13 +2,10 @@
 
 With Git and GitHub, you can keep track of the changes in a project and have a backup online, without the need to save multiple versions of a file!
 
-**Git** is a version control software, and **GitHub** is a hosting service for Git projects. Below are step-by-step instructions on how to work with them from scratch using the terminal (or [shell](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/)).
+**Git** is a version control software, and **GitHub** is a hosting service for Git projects. Below are step-by-step instructions on how to work with them using the terminal (or [shell](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/)) from scratch, up to collaborating with other people and a hands-on implementation for a research project.
 - A line starting with '$' refers to commands typed in the terminal, and a line starting with '>' represents output shown in the terminal.
 - The most commonly used [commands in the terminal](https://www.earthdatascience.org/courses/intro-to-earth-data-science/open-reproducible-science/bash/bash-commands-to-manage-directories-files/) when working with Git are `ls` to list files, and `cd` to navigate through folders.
-
-All **Git commands** have the following syntax: `git verb options`.
-- The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below and summarized [here](https://gist.github.com/davfre/8313299). You can also see [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) and [5](https://nvie.com/posts/a-successful-git-branching-model/).
-- Git commands only work when (in the terminal) you are in a directory or folder that contains a Git project, otherwise the terminal will display the message "Not a git repository".
+- All **Git commands** have the following syntax: `git verb options`. The most commonly used verbs are: `status`, `add`, `commit`, `pull`, `push`. Other useful ones include: `branch`, `checkout`, `reset`, `diff`, `merge`, `log`. All these commands are explained below and summarized [here](https://gist.github.com/davfre/8313299). You can also see [1](https://www.frankpinter.com/notes/git-for-economists-presentation.pdf), [2](https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf), [3](https://rubygarage.org/blog/most-basic-git-commands-with-examples), [4](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) and [5](https://nvie.com/posts/a-successful-git-branching-model/).
 
 A few key concepts to start:
 - A **repository** or **repo** is a project (i.e. folder with files). To **commit** is to register the changes made in a file or files. A **Git repository** is a history of commits and how they relate. Git tracks changes in files line by line and stores data as a series of snapshots.
@@ -128,7 +125,7 @@ $ git remote set-url origin git@github.com:USERNAME/REPOSITORY.git	# Switch from
 
 
 ## Create a Repository <a name="repositories"></a>
-You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic.
+You need to designate a folder to be a Git repository. When you initialize a folder to be a repository, Git creates a subfolder called *.git* that it uses to do all its magic. In fact, Git commands only work when (in the terminal) you are in a directory or folder that contains a Git repository, otherwise the terminal will display the message "Not a git repository".
 
 You can create a repository in github.com by clicking the plus sign at the top right corner and choosing 'New Repository'. Type a name for the repository (with no spaces) and choose whether you want the repository to be private or public.
 It is recommended to include a README file, a license file and a GitHub-hosted *.gitignore* file. The *.gitignore* file includes the file extensions you want Git to ignore; for example, type 'tex' to exclude junk files from LaTeX, and modify it to add more extensions (e.g. autosave extensions for Word, Matlab, Stata, R, Python).
