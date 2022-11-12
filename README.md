@@ -136,7 +136,7 @@ $ cd <path/to/folder>
 $ git clone <URL>
 ```
 This initializes a folder as a Git repository in your machine. You can now make changes to your project, either in github.com or in your local machine. See below for how to pull down from github.com the most recent version of the project to your machine, and how to upload changes made to files in your local machine to github.com.
-- You can also create a local repo from the terminal. Go to the desired folder using `cd` and type `git init`. Then, you need to type `git push -u origin main` in your first push to upstream the local repo to a remote (empty) repo. This creates an upstream branch `main` *and* sets `origin/main` as a remote-tracking branch (i.e. the local branch `main` will be pushed to the upstream branch (origin) `main`).
+- You can also create a local repo from the terminal and [add it to GitHub using Git](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git).
 - Avoid keeping your local repo in the Dropbox folder: there is a chance of conflicts between the syncing of Dropbox and GitHub, and the space limit in Dropbox might be an issue when the project's size grows.
 - Git does not include empty folders in updates to remote repositories in GitHub. To make Git to recognize such folders, the non-official convention is to put a *.gitkeep* file in them. For this, move to the empty folder with `cd` and type `touch .gitkeep`.
 - Regarding the [*.gitignore* file](https://help.github.com/en/articles/ignoring-files):
