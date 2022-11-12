@@ -388,7 +388,7 @@ Temporary branch names have the following structure: **category/type/task**.
 - *Task* names should have no spaces, they should be brief and meaningful, and never be omitted. These branch names are thus **not** valid: `code/ans` (does not include a task name), `fix/mai/1` (not meaningful), `docs/mix/figure 5` (there's a space).
 - **Examples** of valid names: `data/raw/import-csv`, `code/ans/add-comments`, `docs/ppr/edit-section3`, `fix/dev/date-format`.
 - This structure for temporary branch names follows [useful naming conventions](https://stackoverflow.com/questions/273695/what-are-some-examples-of-commonly-used-practices-for-naming-git-branches) that facilitate the workflow.
-- [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) aligns with these naming conventions.
+- [This repository template](https://github.com/pavelsolis/Replication-Folder) (a folder structure that facilitates the reproducibility of research results) and [this paper](https://github.com/pavelsolis/FXpuzzle) apply these naming conventions.
 
 
 ### Implementation of the Model <a name="implementation"></a>
