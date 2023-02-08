@@ -294,7 +294,8 @@ $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <pa
 $ git push -u origin <branchname>	# Set upstream for branch <branchname>
 # Edit, test, commit, push in <branchname>
 
-# In other machines:
+# In other machines, cd to the <parent> branch:
+$ git pull
 $ git checkout -b <branchname> <parent>	# Create branch <branchname> off the <parent> branch and switch to it
 $ git branch -u origin/<branchname>	# Set the behind-the-remote branch <branchname> to track origin/<branchname>
 ```
