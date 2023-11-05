@@ -200,7 +200,7 @@ $ git diff HEAD <filename.ext>		# Show changes since the last commit (i.e. chang
 ### See History of Commits <a name="git-log"></a>
 See a list of previous commits:
 ```bash
-$ git log				# Show sequence of local commits in current branch
+$ git log --oneline			# Show sequence of local commits in current branch
 $ git log HEAD..origin/<brachname>	# Show sequence of remote commits in current branch
 $ git reflog				# Show sequence of actions in the repository
 ```
@@ -213,15 +213,29 @@ $ git restore .				# For all unstaged files in the working directory
 ```
 
 ### Uncommit Changes <a name="git-reset"></a>
-You can rewrite history and to throw out commits that you no longer want (e.g. incomplete or wrongly committed files):
+You can go back in the commit history when you have unwanted commits (e.g. incomplete or wrongly committed files). 
+
+If you are working on a local repository with changes **not** yet pushed to the remote, you can use `git reset` (it can alter the commit history):
 ```bash
 $ git reset --soft HEAD^			# Undo last commit but put changes back in staging area (keep changes)
 $ git reset --hard HEAD^			# Undo last commit and all changes
+$ git reset COMMIT_ID				# Undo a specific commit
+$ git reset COMMIT_ID --hard			# Undo a specific commit and all the changes made afterwards
 $ git checkout COMMIT_ID -- <file1>, <file2>	# Reverse changes from a previous commit
 ```
-- If you also did a `git push`, see [here](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
+If the changes have already been pushed to the remote, you can use `git revert` (it creates a new commit):
+```bash
+$ git revert HEAD				# Create a new commit doing the opposite of the last one
+$ git revert HEAD~2...HEAD 			# Revert the last two commits
+$ git revert COMMIT_ID				# Revert the file(s) to the state before a specific commit
+```
+- To get the commit ID, use `git log --oneline`.
+- Notice that `git revert` can be followed by [HEAD~](https://sentry.io/answers/revert-a-git-repository-to-a-previous-commit/) or the [commit ID](https://www.freecodecamp.org/news/git-reverting-to-previous-commit-how-to-revert-to-last-commit/).
+- For the rationale of when to use `git reset` and when `git revert`, see [here](https://www.freecodecamp.org/news/git-reverting-to-previous-commit-how-to-revert-to-last-commit/).
+- For the difference between HEAD, HEAD^ and HEAD~, see [here](https://stackoverflow.com/questions/14733687/whats-the-difference-between-and-in-git).
 
 <!---
+- If you also did a `git push`, see [here](https://stackoverflow.com/questions/12481639/remove-files-from-git-commit).
 - `--cached` does not affect the working directory because it works directly in the index.
 - `--` tells Git that what follows after the two dashes are filenames.
 ```bash
