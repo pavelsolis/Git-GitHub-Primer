@@ -438,14 +438,15 @@ $ git push -u origin cat/typ/task	# Set upstream for the temporary branch
 $ git checkout dev
 $ git pull				# Pull before push to have the latest version of the remote temporary branch
 $ git merge --no-ff cat/typ/task	# Merge changes in temporary into dev without a fast-forward
-$ git pull --no-rebase			# Optional: it might be needed when working in teams to ensure no conflicts
+	$ git pull --no-rebase		# Optional: it might be needed when working in teams to ensure no conflicts
 $ git push origin dev			# Push changes to the server
 
 # Delete temporary branch
 $ git branch -d cat/typ/task		# Delete (fully merged) local temporary branch
 $ git push -d origin cat/typ/task	# Delete remote temporary branch
 ```
-- You may need to create the `dev` branch in different machines. See [above](#push-multiple) on how to push to the same branch from multiple machines.
+- After merging a temporary into the `dev` branch in the first machine, use `git checkout dev`, `git pull` and `git branch -d cat/typ/task` in all other machines.
+- If you need to create the same branch (`dev`, temporary) in different machines, see [above](#push-multiple) on how to push to the same branch from multiple machines.
 - For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
 
 <!---
