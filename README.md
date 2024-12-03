@@ -21,6 +21,7 @@ A few key concepts to start:
 	1. [See Changes Before Committing](#git-diff)
 	1. [See History of Commits](#git-log)
 	1. [Discard Unwanted Changes](#git-restore)
+ 	1. [Remove Untracked Files](#git-clean)
 	1. [Uncommit Changes](#git-reset)
 7. [Refined Git Workflow: Branching and Merging](#refined-workflow)
 	1. [Create a Branch](#git-branch)
@@ -206,10 +207,17 @@ $ git reflog				# Show sequence of actions in the repository
 ```
 
 ### Discard Unwanted Changes <a name="git-restore"></a>
-You can discard *unwanted* changes to a file permanently before they are staged (**Warning**: It erases any unsaved work!):
+You can discard *unwanted* changes to a modified (unstaged) file permanently before they are staged (**Warning**: It erases any unsaved work!):
 ```bash
 $ git restore <filename.ext>		# For a specific file
 $ git restore .				# For all unstaged files in the working directory
+```
+
+### Remove Untracked Files <a name="git-clean"></a>
+You can remove new (untracked) files from the working tree that are not yet under version control (**Warning**: It deletes files!):
+```bash
+$ git clean -n				# Show what will be deleted
+$ git clean -f -d			# Remove untracked directories and untracked files
 ```
 
 ### Uncommit Changes <a name="git-reset"></a>
