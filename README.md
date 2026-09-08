@@ -426,13 +426,13 @@ $ git push -u origin dev		# Set upstream for dev branch
 
 # Merge dev branch into main (close all open files from dev branch first)
 $ git checkout main
-$ git pull				# Pull before push to have the latest version of remote dev branch
+$ git pull						# Pull before push to have the latest version of the remote main branch
 $ git merge --no-ff dev			# Merge changes in dev into main without a fast-forward
 $ git push origin main			# Push changes to the server
 
-# Delete dev branch
-$ git branch -d dev			# Delete (fully merged) local dev branch
-$ git push -d origin dev		# Delete remote dev branch
+# Keep dev branch synchronized to continue making new commits safely
+$ git checkout dev				# Switch to dev branch
+$ git merge main				# Pull updates made to main back into dev
 
 
 	# Temporary branches
@@ -456,6 +456,7 @@ $ git push -d origin cat/typ/task	# Delete remote temporary branch
 - After merging a temporary into the `dev` branch in the first machine, use `git checkout dev`, `git pull` and `git branch -d cat/typ/task` in all other machines.
 - If you need to create the same branch (`dev`, temporary) in different machines, see [above](#push-multiple) on how to push to the same branch from multiple machines.
 - For temporary `fix` branches which branch off from `main`, substitute `dev` for `main` above.
+- If you want to delete the `dev` branch after merging it with `main`, use `git branch -d dev` to delete the (fully merged) local `dev` branch followed by `git push -d origin dev` to delete the remote `dev` branch.
 
 <!---
 $ git push origin --delete <branchname>	# Delete remote branch
